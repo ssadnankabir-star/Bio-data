@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Sadnan Biodata</title>
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+<header class="top">
+  <div><b>Sadnan Biodata CMS</b><span id="status">Checking session…</span></div>
+  <div class="actions">
+    <a href="index.html">Public</a><button id="undo">Undo</button><button id="redo">Redo</button>
+    <button id="save" class="primary">Save</button><button id="logout">Logout</button>
+  </div>
+</header>
+
+<main class="layout">
+<section class="panel">
+  <h1>Content Editor</h1>
+  <p class="muted">Login দিয়ে শুধু অনুমোদিত Firebase account-ই এই editor ব্যবহার করতে পারবে।</p>
+
+  <div id="loginBox" class="card">
+    <h2>Admin Login</h2>
+    <label>Email<input id="email" type="email" value="ssadnankabir@gmail.com" autocomplete="username"></label>
+    <label>Password<input id="password" type="password" autocomplete="current-password"></label>
+    <button id="login" class="primary wide">Login</button>
+    <button id="reset" class="link">Forgot password?</button>
+    <p id="message" class="error"></p>
+  </div>
+
+  <div id="editorBox" hidden>
+    <div class="toolbar">
+      <button id="addSection">+ Add section</button>
+      <button id="addField">+ Add field</button>
+      <button id="removeSelected" class="danger">Remove selected</button>
+      <button id="imageBtn">Replace image</button>
+      <input id="imageInput" type="file" accept="image/*" hidden>
+    </div>
+    <p class="hint">Preview-এর কোনো লেখা double-click করে edit করো। Section/card select করে Remove, অথবা Add ব্যবহার করো।</p>
+    <iframe id="preview" title="Live biodata preview"></iframe>
+    <div class="data-actions">
+      <button id="export">Export backup</button>
+      <label class="button">Import backup<input id="import" type="file" accept=".json,application/json" hidden></label>
+      <button id="restore">Restore local draft</button>
+      <button id="publish" class="primary">Publish to public page</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="config/firebase-config.js"></script>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
