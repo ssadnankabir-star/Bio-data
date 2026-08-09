@@ -1,9 +1,9 @@
 {
-  "name": "Sadnan Kabir Biodata",
-  "short_name": "SK Biodata",
+  "name": "Sadnan Kabir Personal Profile",
+  "short_name": "Sadnan Profile",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fbf7ee",
   "theme_color": "#0f3d2e",
-  "lang": "bn"
+  "lang": "en"
 }

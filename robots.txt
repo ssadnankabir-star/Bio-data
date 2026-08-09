@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Sitemap: https://ssadnankabir-star.github.io/Bio-data/sitemap.xml

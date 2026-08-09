@@ -1,31 +1,64 @@
-# Sadnan Kabir — Premium Biodata Portfolio
+# Sadnan Kabir — Personal Profile
 
-This package preserves the original `biodata.html` design as the public `index.html` and adds a Firebase-authenticated admin CMS.
+This project is the updated personal-profile version of the existing site. It preserves the original emerald, gold, and cream visual identity, card language, borders, shadows, spacing, profile-image treatment, responsive behavior, and Firebase-based editor while updating the presentation into a neutral personal profile.
 
-## Setup
+## Public profile
 
-1. Create a Firebase project.
-2. Enable Authentication → Email/Password.
-3. Create the admin user with `ssadnankabir@gmail.com` and the password you chose. The password is never stored in this repository.
-4. Create Firestore Database.
+The public `index.html` includes:
+
+- Personal profile hero
+- Personal information
+- About Me
+- Education
+- Professional Life
+- Skills & Tools
+- Family
+- Interests & Lifestyle
+- Favourite Books
+- Gallery
+- Social Links
+- Contact information
+- Print, share, and copy-link tools
+- SEO metadata, Open Graph, Twitter metadata, canonical URL, JSON-LD, sitemap, robots, and web manifest
+
+The Gallery starts with the existing profile image. In the admin editor, duplicate the gallery card and replace its image to add more photos without using placeholders.
+
+## Firebase setup
+
+1. Create or open your Firebase project.
+2. Enable Authentication > Email/Password.
+3. Create the administrator account for `ssadnankabir@gmail.com` using a password stored only in Firebase Authentication.
+4. Create a Firestore database and enable Firebase Storage.
 5. Register a Firebase Web App.
-6. Copy its public Web App configuration into `config/firebase-config.js`.
-7. Apply `firestore.rules`.
-8. Upload the whole folder to a GitHub repository and enable GitHub Pages.
-9. Open `/admin.html`, sign in, edit, and press **Save / Publish**.
+6. Paste the Firebase Web App configuration into `config/firebase-config.js`.
+7. Deploy `firestore.rules` and `storage.rules`.
+8. Upload this folder to the GitHub repository used by GitHub Pages.
+9. Open `/admin.html`, sign in, edit the profile, then click **Save** or **Publish to public page**.
 
-## Important security note
+No administrator password is stored in the repository.
 
-A static GitHub Pages site cannot securely implement a secret password by itself. Firebase Authentication is therefore required for real password protection. Do not put the password in HTML, JavaScript, or Git.
+## Admin editor
 
-## Editing
+The editor supports:
 
-- Double-click text in the preview to edit.
-- Select a card/section and use Remove.
-- Add Field / Add Section are available.
-- Replace image supports local preview/data embedding.
-- Undo/Redo, local draft, JSON backup/restore, and cloud publishing are included.
+- Firebase login, logout, persistent session, password reset
+- Inline text editing
+- Add section and add field
+- Delete selected content
+- Duplicate selected content
+- Move selected content up or down
+- Hide or show selected content
+- Replace images with optimized WebP uploads to Firebase Storage
+- Undo and redo
+- Local draft backup
+- JSON import and export
+- Cloud publish to `publicContent/profile`
+- Keyboard shortcuts: Ctrl/Cmd+S, Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z
 
-## Public fallback
+For links, double-click a link inside the admin preview to update its destination URL.
 
-If Firebase is not configured or unavailable, the bundled original biodata remains visible. The public page can load the published Firestore HTML when Firebase is configured.
+## GitHub Pages URL
+
+The project keeps the requested public URL structure:
+
+`https://ssadnankabir-star.github.io/Bio-data/index.html`
