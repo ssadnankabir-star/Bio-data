@@ -501,7 +501,7 @@
   .live-share-head .eyebrow{margin-bottom:5px}
   .live-share-head h3{margin:0;font-family:'Playfair Display',serif;color:var(--emerald-deep);font-size:23px}
   .live-share-close{width:36px;height:36px;border:0;border-radius:999px;background:#F5F1E7;color:var(--ink);font-size:21px;cursor:pointer}
-  .live-share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .live-share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
   .live-share-option{
     min-height:100px;border:1px solid #E9DFC9;background:#FBF9F2;border-radius:15px;padding:14px 10px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;
@@ -1083,7 +1083,6 @@
 </div>
 
 <nav id="portfolioTools" aria-label="Profile tools">
-  <button type="button" id="printBtn">Print Page</button>
   <button type="button" id="shareBtn">Share</button>
   <button type="button" id="copyBtn">Copy link</button>
 </nav>
@@ -1130,6 +1129,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 15h8M8 18h5"/></svg>
         <span>Professional PDF</span>
       </button>
+      <button type="button" class="live-share-option" id="liveShareAllImages">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 9 4-2v10l-4-2"/><path d="M7 10h6M7 14h4"/></svg>
+        <span>Share 3 Images</span>
+      </button>
       <button type="button" class="live-share-option" id="liveShareImage">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
         <span>Share page image</span>
@@ -1144,7 +1147,7 @@
       </div>
     </div>
     <div class="export-working" id="exportWorking">Preparing from the current live profile...</div>
-    <p class="live-share-note">Professional PDF is generated directly from the current live profile. It does not open the browser Print dialog. Images are generated page-by-page from complete sections.</p>
+    <p class="live-share-note">Professional PDF is generated directly from the live profile with no Print dialog. You can also share all 3 profile images together, or choose a single page.</p>
   </div>
 </div>
 
