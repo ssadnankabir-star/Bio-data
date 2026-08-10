@@ -237,6 +237,255 @@
     .family-brother-card{grid-column:1 / -1}
   }
 
+
+  /* ---------- Premium UI polish ---------- */
+  body{
+    background-image:
+      radial-gradient(circle at 20% 10%,rgba(212,175,55,.10),transparent 30%),
+      radial-gradient(circle at 90% 30%,rgba(15,61,46,.07),transparent 28%),
+      radial-gradient(circle,rgba(212,175,55,.14) 1px,transparent 1px);
+  }
+  .wrap{
+    box-shadow:
+      0 30px 80px -28px rgba(15,61,46,.35),
+      0 8px 24px rgba(34,31,26,.04);
+  }
+  .frame-inner{
+    background:linear-gradient(180deg,rgba(255,255,255,.20),rgba(255,255,255,0));
+  }
+  .header{
+    padding-bottom:4px;
+  }
+  .photo-ring{
+    transition:transform .28s ease,box-shadow .28s ease;
+  }
+  .photo-ring:hover{
+    transform:translateY(-3px) scale(1.015);
+    box-shadow:0 16px 36px -12px rgba(184,134,11,.55);
+  }
+  .quick-links a,
+  .social-card,
+  .contact-card,
+  .book,
+  .stat-card,
+  .education-item,
+  .family-profile-card{
+    transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease;
+  }
+  .quick-links a:hover,
+  .social-card:hover,
+  .contact-card:hover,
+  .book:hover,
+  .stat-card:hover,
+  .education-item:hover,
+  .family-profile-card:hover{
+    transform:translateY(-2px);
+  }
+  .card{
+    box-shadow:0 10px 28px rgba(15,61,46,.065);
+    border-color:#EDE3CD;
+  }
+  .section-title h3{
+    letter-spacing:-.01em;
+  }
+  .stat-card:hover,
+  .education-item:hover,
+  .contact-card:hover,
+  .book:hover{
+    border-color:#E2D19F;
+    box-shadow:0 8px 20px rgba(15,61,46,.055);
+  }
+  .skill-chip,.interest-chip{
+    transition:transform .18s ease,border-color .18s ease,background .18s ease;
+  }
+  .skill-chip:hover,.interest-chip:hover{
+    transform:translateY(-1px);
+    border-color:#D8C48E;
+    background:#FFFDF7;
+  }
+
+  /* ---------- Family section ---------- */
+  .family-section{
+    position:relative;
+    overflow:hidden;
+  }
+  .family-section::after{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    right:-70px;
+    bottom:-90px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(212,175,55,.11),transparent 70%);
+    pointer-events:none;
+  }
+  .family-intro{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:-3px 0 16px;
+    padding:10px 12px;
+    background:linear-gradient(135deg,#FBF8EF,#FFFDF8);
+    border:1px solid #EEE4CD;
+    border-radius:12px;
+  }
+  .family-intro-icon{
+    width:30px;
+    height:30px;
+    flex:0 0 auto;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#EAF0E6;
+    color:var(--emerald);
+  }
+  .family-intro-icon .icon{width:15px;height:15px}
+  .family-intro p{
+    margin:0;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .family-profile-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .family-profile-card{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(145deg,#FFF,#FBF9F2);
+    border:1px solid #EAE0C9;
+    border-radius:16px;
+    padding:16px;
+    box-shadow:0 7px 20px rgba(15,61,46,.045);
+  }
+  .family-profile-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:4px;
+    height:100%;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold));
+  }
+  .family-profile-card:hover{
+    border-color:#DCCB9F;
+    box-shadow:0 12px 26px rgba(15,61,46,.075);
+  }
+  .family-card-top{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:13px;
+  }
+  .family-avatar{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(145deg,#EAF0E6,#F4F7F0);
+    border:1px solid #DCE7D8;
+    color:var(--emerald);
+  }
+  .family-avatar.brother{
+    background:linear-gradient(145deg,#F8F0D9,#FFF8E8);
+    border-color:#EADDB9;
+    color:#9A7415;
+  }
+  .family-avatar .icon{width:18px;height:18px}
+  .family-heading-copy{
+    min-width:0;
+    flex:1;
+  }
+  .family-relation{
+    display:block;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:2px;
+  }
+  .family-person-name{
+    margin:0;
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    line-height:1.3;
+    color:var(--emerald-deep);
+  }
+  .family-status-badge{
+    flex:0 0 auto;
+    border:1px solid #E9D9A8;
+    background:#FFF9E8;
+    color:#8A6A12;
+    border-radius:999px;
+    padding:5px 8px;
+    font-size:9.5px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .family-status-badge.soft{
+    border-color:#D8E5D3;
+    background:#F2F7EF;
+    color:var(--emerald);
+  }
+  .family-info-list{
+    display:grid;
+    gap:8px;
+  }
+  .family-info-item{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    padding:9px 10px;
+    border-radius:11px;
+    background:rgba(251,249,242,.82);
+    border:1px solid rgba(238,230,206,.8);
+  }
+  .family-info-icon{
+    width:26px;
+    height:26px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:#FFF;
+    color:var(--emerald);
+    box-shadow:0 2px 8px rgba(15,61,46,.04);
+  }
+  .family-info-icon .icon{width:13px;height:13px}
+  .family-label{
+    display:block;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    margin-bottom:2px;
+  }
+  .family-info-item strong{
+    display:block;
+    font-size:11.8px;
+    line-height:1.55;
+    color:var(--ink);
+    font-weight:600;
+  }
+  @media(min-width:640px){
+    .family-profile-grid{grid-template-columns:1fr 1fr}
+    .family-brother-card{grid-column:1/-1}
+    .family-brother-card .brother-info{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:520px){
+    .family-card-top{align-items:flex-start;flex-wrap:wrap}
+    .family-status-badge{margin-left:51px}
+  }
+
 </style>
 </head>
 <body>
@@ -333,32 +582,102 @@
           </div>
         </section>
 
-        <section class="card section" id="family">
+        <section class="card section family-section" id="family">
           <div class="section-title">
-            <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-            <h3 class="editable">Family</h3><div class="rule"></div>
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.74"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="editable">Family</h3>
+            <div class="rule"></div>
           </div>
+
+          <div class="family-intro">
+            <span class="family-intro-icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10Z"/></svg>
+            </span>
+            <p>A close-knit family rooted in education, responsibility, and mutual support.</p>
+          </div>
+
           <div class="family-profile-grid" id="familyList">
-            <article class="family-profile-card">
-              <h4 class="family-person-name editable">Md Rezwan Kabir</h4>
-              <div class="family-detail-row"><span class="label">Position</span><span class="value editable">Senior Teacher</span></div>
-              <div class="family-detail-row"><span class="label">Institution</span><span class="value editable">Jamalganj Girls' High School</span></div>
-              <div class="family-detail-row"><span class="label">Status</span><span class="value"><span class="family-status-badge editable">Deceased — 2024</span></span></div>
+            <article class="family-profile-card family-parent-card">
+              <div class="family-card-top">
+                <div class="family-avatar" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                </div>
+                <div class="family-heading-copy">
+                  <span class="family-relation">Father</span>
+                  <h4 class="family-person-name editable">Md Rezwan Kabir</h4>
+                </div>
+                <span class="family-status-badge editable">Deceased · 2024</span>
+              </div>
+              <div class="family-info-list">
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </span>
+                  <div><span class="family-label">Position</span><strong class="editable">Senior Teacher</strong></div>
+                </div>
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg>
+                  </span>
+                  <div><span class="family-label">Institution</span><strong class="editable">Jamalganj Girls' High School</strong></div>
+                </div>
+              </div>
             </article>
 
-            <article class="family-profile-card">
-              <h4 class="family-person-name editable">Hasna Yasmin Piara</h4>
-              <div class="family-detail-row"><span class="label">Position</span><span class="value editable">Retired Senior Teacher</span></div>
-              <div class="family-detail-row"><span class="label">Institution</span><span class="value editable">Sachna Bazar High School</span></div>
-              <div class="family-detail-row"><span class="label">Status</span><span class="value editable">Retired</span></div>
+            <article class="family-profile-card family-parent-card">
+              <div class="family-card-top">
+                <div class="family-avatar" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                </div>
+                <div class="family-heading-copy">
+                  <span class="family-relation">Mother</span>
+                  <h4 class="family-person-name editable">Hasna Yasmin Piara</h4>
+                </div>
+                <span class="family-status-badge soft editable">Retired</span>
+              </div>
+              <div class="family-info-list">
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </span>
+                  <div><span class="family-label">Position</span><strong class="editable">Retired Senior Teacher</strong></div>
+                </div>
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg>
+                  </span>
+                  <div><span class="family-label">Institution</span><strong class="editable">Sachna Bazar High School</strong></div>
+                </div>
+              </div>
             </article>
 
             <article class="family-profile-card family-brother-card">
-              <h4 class="family-person-name editable">Tanjim Redwan</h4>
-              <div class="family-detail-row"><span class="label">Relation</span><span class="value editable">Brother</span></div>
-              <div class="family-detail-row"><span class="label">Siblings</span><span class="value editable">1 brother, no other siblings</span></div>
-              <div class="family-detail-row"><span class="label">Work</span><span class="value editable">Employed and works with the same company/group</span></div>
-              <div class="family-detail-row"><span class="label">Status</span><span class="value editable">Married</span></div>
+              <div class="family-card-top">
+                <div class="family-avatar brother" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                </div>
+                <div class="family-heading-copy">
+                  <span class="family-relation">Brother</span>
+                  <h4 class="family-person-name editable">Tanjim Redwan</h4>
+                </div>
+                <span class="family-status-badge soft editable">Married</span>
+              </div>
+              <div class="family-info-list brother-info">
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                  </span>
+                  <div><span class="family-label">Siblings</span><strong class="editable">1 brother, no other siblings</strong></div>
+                </div>
+                <div class="family-info-item">
+                  <span class="family-info-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </span>
+                  <div><span class="family-label">Work</span><strong class="editable">Employed and works with the same company/group</strong></div>
+                </div>
+              </div>
             </article>
           </div>
         </section>
