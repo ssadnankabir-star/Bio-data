@@ -1083,7 +1083,7 @@
 </div>
 
 <nav id="portfolioTools" aria-label="Profile tools">
-  <button type="button" id="printBtn">Print</button>
+  <button type="button" id="printBtn">Print Page</button>
   <button type="button" id="shareBtn">Share</button>
   <button type="button" id="copyBtn">Copy link</button>
 </nav>
@@ -1144,7 +1144,7 @@
       </div>
     </div>
     <div class="export-working" id="exportWorking">Preparing from the current live profile...</div>
-    <p class="live-share-note">PDF is generated directly from the current live profile with clickable links. No Print or Save as PDF step is required. Images are generated page-by-page from complete sections.</p>
+    <p class="live-share-note">Professional PDF is generated directly from the current live profile. It does not open the browser Print dialog. Images are generated page-by-page from complete sections.</p>
   </div>
 </div>
 
@@ -1171,7 +1171,7 @@ async function loadPublished(){
   }catch(e){console.warn("Cloud profile unavailable; showing bundled content.",e)}
 }
 document.getElementById("year").textContent=new Date().getFullYear();
-document.getElementById("printBtn")?.addEventListener("click",()=>window.print());
+
 document.getElementById("copyBtn")?.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(location.href);alert("Link copied.")}catch{prompt("Copy this link:",location.href)}});
 
 
