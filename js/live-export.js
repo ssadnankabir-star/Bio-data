@@ -1,4 +1,3 @@
-
 (() => {
   "use strict";
 
@@ -6,6 +5,18 @@
   const picker = document.getElementById("imagePagePicker");
   const working = document.getElementById("exportWorking");
   const shareBtn = document.getElementById("shareBtn");
+
+  const PAGE_WIDTH = 1080;
+  const PAGE_HEIGHT = 1527; // A4 ratio, 210 x 297
+  const PDF_WIDTH_MM = 210;
+  const PDF_HEIGHT_MM = 297;
+  const RENDER_SCALE = 2;
+
+  const pageDefinitions = [
+    ["#home", "#personal", "#about"],
+    ["#education", "#professional", "#family"],
+    ["#skills", "#interests", "#books", "#gallery", "#social", "#contact"]
+  ];
 
   const openModal = () => {
     modal?.classList.add("show");
@@ -33,14 +44,9 @@
   modal?.addEventListener("click", (event) => {
     if (event.target === modal) closeModal();
   });
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeModal();
   });
-
-  // Keep normal page printing separate from Professional PDF.
-
-  const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
 
   document.getElementById("liveShareLink")?.addEventListener("click", async () => {
     const payload = {
@@ -50,7 +56,6 @@
     };
 
     closeModal();
-
     if (navigator.share) {
       try {
         await navigator.share(payload);
@@ -68,322 +73,171 @@
     }
   });
 
-  function getSectionText(selector) {
-    return cleanText(document.querySelector(selector)?.textContent);
-  }
+  function createExportStage(pageNumber) {
+    const pageIndex = Math.max(0, Math.min(2, Number(pageNumber) - 1));
+    const selectors = pageDefinitions[pageIndex];
 
-  function addHeader(pdf, pageNo, totalPages) {
-    pdf.setDrawColor(184, 134, 11);
-    pdf.setLineWidth(0.35);
-    pdf.rect(8, 8, 194, 281);
-
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8.5);
-    pdf.setTextColor(184, 134, 11);
-    pdf.text("SADNAN KAABEER · PERSONAL PROFILE", 14, 15);
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(100, 94, 82);
-    pdf.text(`Page ${pageNo} of ${totalPages}`, 196, 15, { align: "right" });
-  }
-
-  function sectionTitle(pdf, title, y) {
-    pdf.setFillColor(15, 61, 46);
-    pdf.roundedRect(14, y - 4.6, 6, 6, 1.2, 1.2, "F");
-
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(12);
-    pdf.setTextColor(10, 43, 32);
-    pdf.text(title, 24, y);
-
-    pdf.setDrawColor(224, 214, 189);
-    pdf.line(24, y + 2, 196, y + 2);
-
-    return y + 9;
-  }
-
-  function wrapped(pdf, text, x, y, width, opts = {}) {
-    if (!text) return y;
-    pdf.setFont("helvetica", opts.bold ? "bold" : "normal");
-    pdf.setFontSize(opts.size || 9.5);
-    pdf.setTextColor(...(opts.color || [34, 31, 26]));
-    const lines = pdf.splitTextToSize(text, width);
-    pdf.text(lines, x, y);
-    return y + lines.length * (opts.line || 4.6);
-  }
-
-  function keyValue(pdf, key, value, y) {
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8.5);
-    pdf.setTextColor(91, 86, 76);
-    pdf.text(key, 18, y);
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(34, 31, 26);
-    const lines = pdf.splitTextToSize(value, 130);
-    pdf.text(lines, 62, y);
-
-    return y + Math.max(6, lines.length * 4.4);
-  }
-
-  function ensureSpace(pdf, y, need = 30, pageNoRef) {
-    if (y + need <= 278) return y;
-    pdf.addPage();
-    pageNoRef.value += 1;
-    addHeader(pdf, pageNoRef.value, 3);
-    return 24;
-  }
-
-  async function imageData(img) {
-    if (!img) return null;
-    const src = img.currentSrc || img.src;
-    try {
-      const response = await fetch(src, { mode: "cors" });
-      const blob = await response.blob();
-      return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth || 480;
-        canvas.height = img.naturalHeight || 480;
-        canvas.getContext("2d").drawImage(img, 0, 0);
-        return canvas.toDataURL("image/jpeg", 0.92);
-      } catch {
-        return null;
-      }
-    }
-  }
-
-  async function createProfilePdf() {
-    if (!window.jspdf?.jsPDF) {
-      throw new Error("jsPDF did not load.");
-    }
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: true
+    const stage = document.createElement("div");
+    stage.className = "profile-export-stage";
+    Object.assign(stage.style, {
+      position: "fixed",
+      left: "-100000px",
+      top: "0",
+      width: `${PAGE_WIDTH}px`,
+      height: `${PAGE_HEIGHT}px`,
+      overflow: "hidden",
+      zIndex: "-1",
+      background: "#FBF7EE"
     });
 
-    const pageRef = { value: 1 };
-    const totalPages = 3;
-
-    pdf.setFillColor(251, 247, 238);
-    pdf.rect(0, 0, 210, 297, "F");
-    addHeader(pdf, 1, totalPages);
-
-    let y = 26;
-
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(26);
-    pdf.setTextColor(15, 61, 46);
-    pdf.text("Sadnan Kaabeer", 105, y, { align: "center" });
-
-    y += 7;
-    pdf.setFontSize(10);
-    pdf.setTextColor(184, 134, 11);
-    pdf.text("PERSONAL PROFILE", 105, y, { align: "center" });
-
-    y += 7;
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
-    pdf.setTextColor(91, 86, 76);
-    pdf.text("Design, technology, creativity, and continuous learning.", 105, y, { align: "center" });
-
-    const img = document.querySelector(".photo-ring img");
-    const imgDataUrl = await imageData(img);
-    if (imgDataUrl) {
-      y += 7;
-      pdf.addImage(imgDataUrl, "JPEG", 86, y, 38, 38, undefined, "FAST");
-      const photoHref = document.querySelector(".photo-ring a")?.href;
-      if (photoHref) {
-        pdf.link(86, y, 38, 38, { url: photoHref });
-      }
-      y += 45;
-    } else {
-      y += 10;
-    }
-
-    const location = cleanText(document.querySelector(".location")?.textContent);
-    if (location) {
-      pdf.setFontSize(9);
-      pdf.setTextColor(91, 86, 76);
-      pdf.text(location, 105, y, { align: "center" });
-      y += 10;
-    }
-
-    y = sectionTitle(pdf, "Personal Information", y);
-
-    document.querySelectorAll("#personal .stat-card").forEach((card) => {
-      const label = cleanText(card.querySelector(".label")?.textContent);
-      const value = cleanText(card.querySelector(".value")?.textContent);
-      if (label && value) y = keyValue(pdf, label, value, y);
+    const page = document.createElement("div");
+    page.className = "profile-export-page";
+    Object.assign(page.style, {
+      width: `${PAGE_WIDTH}px`,
+      height: `${PAGE_HEIGHT}px`,
+      boxSizing: "border-box",
+      padding: "42px",
+      background: "#FBF7EE",
+      border: "2px solid #B8860B",
+      position: "relative",
+      overflow: "hidden",
+      fontFamily: "Inter, 'Noto Sans Bengali', 'Hind Siliguri', sans-serif",
+      color: "#221F1A"
     });
 
-    y += 3;
-    y = sectionTitle(pdf, "About Me", y);
-    y = wrapped(pdf, getSectionText("#about .body-text"), 18, y, 174, { size: 9.2, line: 4.6 });
-
-    // Page 2
-    pdf.addPage();
-    pageRef.value = 2;
-    pdf.setFillColor(251, 247, 238);
-    pdf.rect(0, 0, 210, 297, "F");
-    addHeader(pdf, 2, totalPages);
-    y = 25;
-
-    y = sectionTitle(pdf, "Education", y);
-    document.querySelectorAll("#education .education-item").forEach((item) => {
-      const title = cleanText(item.querySelector(":scope > strong")?.textContent);
-      const details = [...item.querySelectorAll(":scope > span")].map((el) => cleanText(el.textContent)).filter(Boolean);
-
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(10);
-      pdf.setTextColor(15, 61, 46);
-      pdf.text(title, 18, y);
-      y += 5;
-
-      details.forEach((detail) => {
-        y = wrapped(pdf, detail, 22, y, 168, { size: 8.7, color: [91, 86, 76], line: 4.3 });
-      });
-      y += 3;
+    const inner = document.createElement("div");
+    inner.className = "profile-export-inner";
+    Object.assign(inner.style, {
+      width: "100%",
+      transformOrigin: "top left"
     });
 
-    y += 3;
-    y = sectionTitle(pdf, "Professional Life", y);
+    const exportHeader = document.createElement("div");
+    exportHeader.innerHTML = `
+      <div style="text-align:center;margin:0 0 22px">
+        <div style="font:700 12px Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#B8860B;margin-bottom:7px">Personal Profile</div>
+        <div style="font:700 34px 'Playfair Display',serif;color:#0A2B20">Sadnan Kaabeer</div>
+        <div style="width:70px;height:1px;background:#D4AF37;margin:11px auto 0"></div>
+      </div>
+    `;
+    inner.appendChild(exportHeader);
 
-    const halallab = document.querySelector(".halallab-heading");
-    if (halallab) {
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(11);
-      pdf.setTextColor(15, 61, 46);
-      pdf.text(cleanText(halallab.querySelector(".halallab-title")?.textContent), 18, y);
-      y += 5;
-      y = wrapped(pdf, cleanText(halallab.querySelector(".halallab-copy")?.textContent), 18, y, 174, { size: 8.5, color: [91, 86, 76], line: 4.2 });
-      y += 4;
-    }
+    selectors.forEach((selector) => {
+      const source = document.querySelector(selector);
+      if (!source) return;
+      const clone = source.cloneNode(true);
 
-    document.querySelectorAll("#professional .professional-company-block").forEach((block) => {
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(11);
-      pdf.setTextColor(15, 61, 46);
-      pdf.text(cleanText(block.querySelector(".professional-company-name")?.textContent), 18, y);
-      y += 6;
+      clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
+      clone.querySelectorAll(".profile-nav,#portfolioTools,.live-share-modal,.header-admin-link").forEach((el) => el.remove());
 
-      block.querySelectorAll(".kv-row").forEach((row) => {
-        const k = cleanText(row.querySelector(".k")?.textContent);
-        const v = cleanText(row.querySelector(".v")?.textContent);
-        y = keyValue(pdf, k, v, y);
-      });
-
-      y = wrapped(pdf, cleanText(block.querySelector(".professional-description")?.textContent), 18, y + 1, 174, { size: 8.7, color: [91, 86, 76], line: 4.3 });
-      y += 6;
-    });
-
-    y = sectionTitle(pdf, "Family", y);
-    document.querySelectorAll("#family .family-clean-item").forEach((item) => {
-      const relation = cleanText(item.querySelector(".family-clean-role")?.textContent);
-      const name = cleanText(item.querySelector("h4")?.textContent);
-      const main = cleanText(item.querySelector("p")?.textContent);
-      const meta = cleanText(item.querySelector(".family-clean-meta")?.textContent);
-      const status = cleanText(item.querySelector(".family-clean-status")?.textContent);
-
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(10);
-      pdf.setTextColor(15, 61, 46);
-      pdf.text(`${relation}: ${name}`, 18, y);
-      y += 5;
-
-      y = wrapped(pdf, main, 22, y, 166, { size: 8.6, line: 4.2 });
-      y = wrapped(pdf, meta, 22, y, 166, { size: 8.2, color: [91, 86, 76], line: 4.1 });
-      if (status) {
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(8);
-        pdf.setTextColor(184, 134, 11);
-        pdf.text(status, 22, y);
-        y += 5;
-      }
-      y += 2;
-    });
-
-    // Page 3
-    pdf.addPage();
-    pageRef.value = 3;
-    pdf.setFillColor(251, 247, 238);
-    pdf.rect(0, 0, 210, 297, "F");
-    addHeader(pdf, 3, totalPages);
-    y = 25;
-
-    y = sectionTitle(pdf, "Skills & Tools", y);
-    const skills = [...document.querySelectorAll("#skills .skill-chip")].map((el) => cleanText(el.textContent)).filter(Boolean);
-    y = wrapped(pdf, skills.join(" · "), 18, y, 174, { size: 9.2, line: 4.6 });
-
-    y += 6;
-    y = sectionTitle(pdf, "Interests & Lifestyle", y);
-    const interests = [...document.querySelectorAll("#interests .interest-chip")].map((el) => cleanText(el.textContent)).filter(Boolean);
-    y = wrapped(pdf, interests.join(" · "), 18, y, 174, { size: 9.2, line: 4.6 });
-
-    y += 6;
-    y = sectionTitle(pdf, "Favourite Books", y);
-    const books = [...document.querySelectorAll("#books .book strong")].map((el) => cleanText(el.textContent)).filter(Boolean);
-    y = wrapped(pdf, books.join(" | "), 18, y, 174, { size: 9.2, line: 4.6 });
-
-    y += 7;
-    y = sectionTitle(pdf, "Social Links", y);
-    document.querySelectorAll("#social .social-card").forEach((link) => {
-      const label = cleanText(link.textContent.replace("↗", ""));
-      if (!label || !link.href) return;
-
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(9);
-      pdf.setTextColor(15, 61, 46);
-      pdf.textWithLink(label, 18, y, { url: link.href });
-      y += 6;
-    });
-
-    y += 3;
-    y = sectionTitle(pdf, "Contact", y);
-    document.querySelectorAll("#contact .contact-card").forEach((card) => {
-      const label = cleanText(card.querySelector("strong")?.textContent);
-      const link = card.querySelector("a");
-      const value = cleanText(link?.textContent || card.querySelector("span")?.textContent);
-
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(8.5);
-      pdf.setTextColor(91, 86, 76);
-      pdf.text(label, 18, y);
-
-      pdf.setFont("helvetica", "normal");
-      pdf.setTextColor(34, 31, 26);
-      if (link?.href) {
-        pdf.textWithLink(value, 62, y, { url: link.href });
+      if (clone.matches(".header")) {
+        clone.style.paddingTop = "0";
+        clone.style.marginTop = "0";
       } else {
-        pdf.text(value, 62, y);
+        clone.style.marginTop = "18px";
       }
-      y += 6;
+
+      clone.style.breakInside = "avoid";
+      clone.style.pageBreakInside = "avoid";
+      inner.appendChild(clone);
     });
 
-    y += 6;
-    pdf.setDrawColor(233, 224, 203);
-    pdf.line(18, y, 192, y);
-    y += 7;
+    const footer = document.createElement("div");
+    footer.textContent = `Page ${pageIndex + 1} · Sadnan Kaabeer · Personal Profile`;
+    Object.assign(footer.style, {
+      textAlign: "center",
+      marginTop: "18px",
+      paddingTop: "12px",
+      borderTop: "1px solid #E9E0CB",
+      font: "600 11px Inter,sans-serif",
+      color: "#6A6358"
+    });
+    inner.appendChild(footer);
 
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(10);
-    pdf.setTextColor(15, 61, 46);
-    pdf.textWithLink("Open live Personal Profile", 18, y, { url: location.href });
+    page.appendChild(inner);
+    stage.appendChild(page);
+    document.body.appendChild(stage);
+
+    // Fit the complete page without cutting a section in the middle.
+    const availableHeight = PAGE_HEIGHT - 84;
+    const contentHeight = inner.scrollHeight;
+    if (contentHeight > availableHeight) {
+      const scale = Math.max(0.78, availableHeight / contentHeight);
+      inner.style.transform = `scale(${scale})`;
+      inner.style.width = `${100 / scale}%`;
+    }
+
+    return { stage, page, pageIndex };
+  }
+
+  async function renderExportPage(pageNumber) {
+    if (!window.html2canvas) throw new Error("html2canvas did not load.");
+    await document.fonts?.ready;
+
+    const built = createExportStage(pageNumber);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const links = [];
+    const pageRect = built.page.getBoundingClientRect();
+    built.page.querySelectorAll("a[href]").forEach((anchor) => {
+      const href = anchor.href;
+      if (!href) return;
+      const rect = anchor.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      links.push({
+        href,
+        x: rect.left - pageRect.left,
+        y: rect.top - pageRect.top,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    const canvas = await window.html2canvas(built.page, {
+      scale: RENDER_SCALE,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: "#FBF7EE",
+      logging: false,
+      imageTimeout: 15000,
+      width: PAGE_WIDTH,
+      height: PAGE_HEIGHT,
+      windowWidth: PAGE_WIDTH,
+      windowHeight: PAGE_HEIGHT
+    });
+
+    built.stage.remove();
+    return { canvas, links };
+  }
+
+  async function createHighQualityPdf() {
+    if (!window.jspdf?.jsPDF) throw new Error("jsPDF did not load.");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+
+    for (let pageNumber = 1; pageNumber <= 3; pageNumber += 1) {
+      setWorking(true, `Creating PDF page ${pageNumber} of 3...`);
+      const { canvas, links } = await renderExportPage(pageNumber);
+      const png = canvas.toDataURL("image/png");
+
+      if (pageNumber > 1) pdf.addPage();
+      pdf.addImage(png, "PNG", 0, 0, PDF_WIDTH_MM, PDF_HEIGHT_MM, undefined, "FAST");
+
+      links.forEach((link) => {
+        const x = (link.x / PAGE_WIDTH) * PDF_WIDTH_MM;
+        const y = (link.y / PAGE_HEIGHT) * PDF_HEIGHT_MM;
+        const width = (link.width / PAGE_WIDTH) * PDF_WIDTH_MM;
+        const height = (link.height / PAGE_HEIGHT) * PDF_HEIGHT_MM;
+        if (width > 0 && height > 0) {
+          pdf.link(x, y, width, height, { url: link.href });
+        }
+      });
+    }
 
     return pdf;
   }
 
-  async function shareOrDownloadPdf(pdf) {
+  async function sharePdf(pdf) {
     const blob = pdf.output("blob");
     const file = new File([blob], "sadnan-kaabeer-personal-profile.pdf", { type: "application/pdf" });
 
@@ -404,40 +258,107 @@
   }
 
   document.getElementById("liveSharePdf")?.addEventListener("click", async () => {
-    setWorking(true, "Creating professional PDF...");
+    setWorking(true, "Preparing high quality PDF...");
     try {
-      await document.fonts?.ready;
-      const pdf = await createProfilePdf();
+      const pdf = await createHighQualityPdf();
       closeModal();
-      await shareOrDownloadPdf(pdf);
+      await sharePdf(pdf);
     } catch (error) {
       console.error(error);
-      alert("PDF could not be generated. Please reload the page and try again.");
+      alert("Could not create the PDF. Please reload the page and try again.");
     } finally {
       setWorking(false);
     }
   });
 
+  async function canvasToBlob(canvas) {
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("Image creation failed.")),
+        "image/jpeg",
+        0.95
+      );
+    });
+  }
 
-  async function createImageBlob(pageNumber) {
+  async function shareFiles(files, title, text) {
+    if (navigator.canShare?.({ files })) {
+      try {
+        await navigator.share({ files, title, text });
+        return true;
+      } catch (error) {
+        if (error?.name === "AbortError") return true;
+      }
+    }
+    return false;
+  }
+
+  async function downloadFiles(files) {
+    files.forEach((file, index) => {
+      setTimeout(() => {
+        const url = URL.createObjectURL(file);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = file.name;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }, index * 350);
+    });
+  }
+
+  async function createPageImageFile(pageNumber) {
+    const { canvas } = await renderExportPage(pageNumber);
+    const blob = await canvasToBlob(canvas);
+    return new File([blob], `sadnan-kaabeer-profile-page-${pageNumber}.jpg`, { type: "image/jpeg" });
+  }
+
+  async function shareThreeImages() {
+    setWorking(true, "Creating all 3 profile images...");
+    try {
+      const files = [];
+      for (let pageNumber = 1; pageNumber <= 3; pageNumber += 1) {
+        setWorking(true, `Creating image ${pageNumber} of 3...`);
+        files.push(await createPageImageFile(pageNumber));
+      }
+
+      closeModal();
+      const shared = await shareFiles(files, "Sadnan Kaabeer - Personal Profile", "Personal Profile");
+      if (!shared) {
+        await downloadFiles(files);
+        alert("This browser cannot share 3 files together, so all 3 images were downloaded.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Could not create all 3 images. Please reload the page and try again.");
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  document.getElementById("liveShareAllImages")?.addEventListener("click", shareThreeImages);
+  async function buildImageBlobForPage(pageNumber) {
     if (!window.html2canvas) throw new Error("Image export library did not load.");
     let stage;
     try {
       await document.fonts?.ready;
-      stage = clonePage(pageNumber);
+      stage = typeof clonePage === "function" ? clonePage(pageNumber) : cloneForImagePage(pageNumber);
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      const canvas = await window.html2canvas(stage.firstElementChild, {
-        scale: 1.45,
+      const target = stage.firstElementChild || stage;
+      const canvas = await window.html2canvas(target, {
+        scale: 1.5,
         useCORS: true,
+        allowTaint: false,
         backgroundColor: "#FBF7EE",
         logging: false,
-        imageTimeout: 12000
+        imageTimeout: 15000
       });
       return await new Promise((resolve, reject) => {
         canvas.toBlob(
           (blob) => blob ? resolve(blob) : reject(new Error("Image creation failed.")),
           "image/jpeg",
-          0.93
+          0.94
         );
       });
     } finally {
@@ -445,13 +366,13 @@
     }
   }
 
-  async function shareThreeImages() {
+  async function shareThreeImagesTogether() {
     setWorking(true, "Creating all 3 profile images...");
     try {
       const blobs = [];
       for (let page = 1; page <= 3; page += 1) {
         setWorking(true, `Creating image ${page} of 3...`);
-        blobs.push(await createImageBlob(page));
+        blobs.push(await buildImageBlobForPage(page));
       }
 
       const files = blobs.map((blob, index) => new File(
@@ -462,6 +383,7 @@
 
       closeModal();
 
+      // Web Share API supports sending multiple files together on compatible mobile browsers/apps.
       if (navigator.canShare?.({ files })) {
         try {
           await navigator.share({
@@ -472,11 +394,11 @@
           return;
         } catch (error) {
           if (error?.name === "AbortError") return;
-          console.warn("Multi-file share failed, falling back to downloads.", error);
+          console.warn("Multi-image sharing was not accepted by this browser/app.", error);
         }
       }
 
-      // Fallback: download all 3 files one by one.
+      // Fallback: download the three images together from one click.
       files.forEach((file, index) => {
         setTimeout(() => {
           const url = URL.createObjectURL(file);
@@ -486,156 +408,42 @@
           document.body.appendChild(a);
           a.click();
           a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 1500);
-        }, index * 350);
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
+        }, index * 300);
       });
 
-      alert("Your browser cannot share multiple files together, so all 3 images were downloaded.");
+      alert("This browser cannot send multiple images in one share sheet. All 3 images have been downloaded instead.");
     } catch (error) {
       console.error(error);
-      alert("Could not create all 3 images. Please reload the page and try again.");
+      alert("Could not prepare all 3 images. Please wait until the page fully loads and try again.");
     } finally {
       setWorking(false);
     }
   }
 
-  document.getElementById("liveShareAllImages")?.addEventListener("click", shareThreeImages);
+  document.getElementById("liveShareAllImages")?.addEventListener("click", shareThreeImagesTogether);
+
+
 
   document.getElementById("liveShareImage")?.addEventListener("click", () => {
     picker?.classList.toggle("show");
   });
 
-  const pageDefinitions = [
-    ["#home", "#personal", "#about"],
-    ["#education", "#professional", "#family"],
-    ["#skills", "#interests", "#books", "#gallery", "#social", "#contact"]
-  ];
-
-  function clonePage(pageNumber) {
-    const index = Math.max(0, Math.min(2, Number(pageNumber) - 1));
-    const selectors = pageDefinitions[index];
-
-    const stage = document.createElement("div");
-    Object.assign(stage.style, {
-      position: "fixed",
-      left: "-100000px",
-      top: "0",
-      width: "1080px",
-      background: "#FBF7EE",
-      padding: "34px",
-      zIndex: "-1"
-    });
-
-    const shell = document.createElement("div");
-    Object.assign(shell.style, {
-      background: "#FBF7EE",
-      border: "2px solid #B8860B",
-      borderRadius: "18px",
-      padding: "28px",
-      boxShadow: "0 20px 50px rgba(15,61,46,.12)"
-    });
-
-    const title = document.createElement("div");
-    title.innerHTML = `
-      <div style="text-align:center;margin:0 0 22px">
-        <div style="font:700 12px Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#B8860B;margin-bottom:7px">Personal Profile</div>
-        <div style="font:700 34px 'Playfair Display',serif;color:#0A2B20">Sadnan Kaabeer</div>
-        <div style="width:70px;height:1px;background:#D4AF37;margin:11px auto 0"></div>
-      </div>
-    `;
-    shell.appendChild(title);
-
-    selectors.forEach((selector) => {
-      const node = document.querySelector(selector);
-      if (!node) return;
-      const clone = node.cloneNode(true);
-      clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
-      clone.querySelectorAll(".profile-nav,#portfolioTools,.live-share-modal,.header-admin-link").forEach((el) => el.remove());
-      clone.style.marginTop = "18px";
-      clone.style.breakInside = "avoid";
-      shell.appendChild(clone);
-    });
-
-    const footer = document.createElement("div");
-    footer.textContent = `Page ${index + 1} · Sadnan Kaabeer · Personal Profile`;
-    Object.assign(footer.style, {
-      textAlign: "center",
-      marginTop: "22px",
-      paddingTop: "14px",
-      borderTop: "1px solid #E9E0CB",
-      font: "600 11px Inter,sans-serif",
-      color: "#6A6358"
-    });
-    shell.appendChild(footer);
-
-    stage.appendChild(shell);
-    document.body.appendChild(stage);
-    return stage;
-  }
-
-  async function shareBlob(blob, filename, type) {
-    const file = new File([blob], filename, { type });
-
-    if (navigator.canShare?.({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: "Sadnan Kaabeer - Personal Profile",
-          text: "Personal Profile"
-        });
-        return;
-      } catch (error) {
-        if (error?.name === "AbortError") return;
-      }
-    }
-
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
-  }
-
-  async function exportImage(pageNumber) {
-    if (!window.html2canvas) {
-      alert("Image export library did not load.");
-      return;
-    }
-
-    setWorking(true, `Creating page ${pageNumber} image...`);
-    let stage;
-
-    try {
-      await document.fonts?.ready;
-      stage = clonePage(pageNumber);
-      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-      const canvas = await window.html2canvas(stage.firstElementChild, {
-        scale: 1.5,
-        useCORS: true,
-        backgroundColor: "#FBF7EE",
-        logging: false,
-        imageTimeout: 12000
-      });
-
-      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.94));
-      if (!blob) throw new Error("Image creation failed.");
-
-      closeModal();
-      await shareBlob(blob, `sadnan-kaabeer-profile-page-${pageNumber}.jpg`, "image/jpeg");
-    } catch (error) {
-      console.error(error);
-      alert("Could not create this image. Please try again after the page fully loads.");
-    } finally {
-      stage?.remove();
-      setWorking(false);
-    }
-  }
-
   document.querySelectorAll("[data-export-page]").forEach((button) => {
-    button.addEventListener("click", () => exportImage(button.dataset.exportPage));
+    button.addEventListener("click", async () => {
+      const pageNumber = Number(button.dataset.exportPage);
+      setWorking(true, `Creating page ${pageNumber} image...`);
+      try {
+        const file = await createPageImageFile(pageNumber);
+        closeModal();
+        const shared = await shareFiles([file], "Sadnan Kaabeer - Personal Profile", `Profile page ${pageNumber}`);
+        if (!shared) await downloadFiles([file]);
+      } catch (error) {
+        console.error(error);
+        alert("Could not create this image. Please reload the page and try again.");
+      } finally {
+        setWorking(false);
+      }
+    });
   });
 })();
