@@ -140,6 +140,103 @@
   .share-option:hover{border-color:var(--gold-light);transform:translateY(-1px)}
   .share-note{font-size:11px;line-height:1.6;color:var(--ink-soft);margin:14px 0 0}
   @media(max-width:480px){.share-options{grid-template-columns:1fr}.share-option{flex-direction:row;justify-content:flex-start;padding:12px 14px}}
+
+  /* Final sticky navigation behavior */
+  .profile-nav{
+    position:-webkit-sticky!important;
+    position:sticky!important;
+    top:8px!important;
+    z-index:9999!important;
+    isolation:isolate;
+    transform:translateZ(0);
+    width:max-content;
+    max-width:calc(100% - 16px);
+    margin:-10px auto 24px!important;
+    background:rgba(251,247,238,.94)!important;
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  @media(max-width:600px){
+    .profile-nav{
+      top:6px!important;
+      width:calc(100% - 8px)!important;
+      max-width:none!important;
+      margin:-6px 4px 20px!important;
+      justify-content:flex-start!important;
+      flex-wrap:nowrap!important;
+      overflow-x:auto!important;
+      overflow-y:hidden!important;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .profile-nav::-webkit-scrollbar{display:none}
+    .profile-nav a{flex:0 0 auto}
+  }
+
+
+  .family-profile-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .family-profile-card{background:#FBF9F2;border:1px solid #EEE6CE;border-radius:14px;padding:16px;position:relative;overflow:hidden}
+  .family-profile-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--gold-light),var(--gold))}
+  .family-person-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--emerald-deep);margin:0 0 10px}
+  .family-detail-row{display:grid;grid-template-columns:88px 1fr;gap:10px;padding:5px 0;border-top:1px solid rgba(233,224,203,.65)}
+  .family-detail-row:first-of-type{border-top:0}
+  .family-detail-row .label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;color:var(--ink-soft)}
+  .family-detail-row .value{font-size:12.5px;line-height:1.6;color:var(--ink)}
+  .family-status-badge{display:inline-flex;align-items:center;border:1px solid #E9D9A8;background:#FFF9E8;color:#8A6A12;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700}
+  @media(min-width:640px){.family-profile-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.family-detail-row{grid-template-columns:1fr;gap:2px}}
+
+
+  .social-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .social-card .social-main{display:flex;align-items:center;gap:9px;min-width:0}
+  .social-card .social-main svg{flex:0 0 auto}
+  .social-card .social-main span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media(min-width:768px){.social-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:520px){.social-grid{grid-template-columns:1fr}}
+
+
+  /* Guaranteed always-visible top navigation */
+  .profile-nav{
+    position:fixed!important;
+    top:10px!important;
+    left:50%!important;
+    transform:translateX(-50%) translateZ(0)!important;
+    z-index:2147483000!important;
+    width:max-content!important;
+    max-width:calc(100vw - 24px)!important;
+    margin:0!important;
+    background:rgba(251,247,238,.95)!important;
+    border:1px solid rgba(184,134,11,.24)!important;
+    box-shadow:0 10px 32px rgba(15,61,46,.13)!important;
+    backdrop-filter:blur(16px)!important;
+    -webkit-backdrop-filter:blur(16px)!important;
+  }
+  .header{padding-top:58px!important}
+  @media(max-width:600px){
+    .profile-nav{
+      top:6px!important;
+      left:6px!important;
+      right:6px!important;
+      transform:none!important;
+      width:auto!important;
+      max-width:none!important;
+      justify-content:flex-start!important;
+      flex-wrap:nowrap!important;
+      overflow-x:auto!important;
+      overflow-y:hidden!important;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+    }
+    .profile-nav::-webkit-scrollbar{display:none}
+    .profile-nav a{flex:0 0 auto}
+    .header{padding-top:54px!important}
+  }
+
+
+  @media(min-width:640px){
+    .family-brother-card{grid-column:1 / -1}
+  }
+
 </style>
 </head>
 <body>
@@ -154,7 +251,15 @@
       <svg class="corner br" viewBox="0 0 80 80" fill="none"><path d="M2 2 L2 34 M2 2 L34 2" stroke="#B8860B" stroke-width="2" stroke-linecap="round"/><circle cx="2" cy="2" r="3.5" fill="#B8860B"/><path d="M16 2 A14 14 0 0 1 2 16" stroke="#D4AF37" stroke-width="1.2"/><circle cx="2" cy="20" r="1.6" fill="#D4AF37"/><circle cx="20" cy="2" r="1.6" fill="#D4AF37"/></svg>
 
       <nav class="profile-nav" aria-label="Profile navigation">
-        <a href="#home">Home</a><a href="#about">About</a><a href="#personal">Personal</a><a href="#education">Education</a><a href="#professional">Professional</a><a href="#family">Family</a><a href="#interests">Interests</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#personal">Personal</a>
+        <a href="#education">Education</a>
+        <a href="#professional">Professional</a>
+        <a href="#family">Family</a>
+        <a href="#interests">Interests</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
       </nav>
 
       <header class="header section" id="home">
@@ -164,7 +269,7 @@
         <p class="subtitle editable">Personal Profile</p>
         <p class="hero-line editable">Design, technology, creativity, and continuous learning.</p>
         <div class="flourish"><div class="line"></div><span class="mark">❦</span><div class="line"></div></div>
-        <div class="photo-ring"><a href="https://m.facebook.com/photo.php?fbid=4461239434113529" target="_blank" rel="noopener" aria-label="Open Sadnan Kaabeer profile photo on Facebook" style="display:block;width:100%;height:100%;border-radius:50%"><img src="assets/profile.jpg" alt="Sadnan Kaabeer" loading="eager"></a></div>
+        <div class="photo-ring"><a href="https://m.facebook.com/photo.php?fbid=4461239434113529" target="_blank" rel="noopener noreferrer" aria-label="Open Sadnan Kaabeer profile photo on Facebook" style="display:block;width:100%;height:100%;border-radius:50%"><img src="assets/profile.jpg" alt="Sadnan Kaabeer" loading="eager"></a></div>
         <h2 class="name editable">Sadnan Kaabeer</h2>
         <p class="location editable"> Natunpara, Jamalganj, Sunamganj · Bangladesh</p>
         <div class="quick-links">
@@ -200,39 +305,60 @@
 
       <div class="two-col">
         <section class="card section" id="education">
-          <div class="section-title"><div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg></div><h3 class="editable">Education</h3><div class="rule"></div></div>
+          <div class="section-title">
+            <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg></div>
+            <h3 class="editable">Education</h3><div class="rule"></div>
+          </div>
           <div class="education-grid" id="eduList">
-            <div class="education-item"><strong class="editable">SSC</strong><span class="editable">Jamalganj Model High School · 2015</span></div>
-            <div class="education-item"><strong class="editable">HSC</strong><span class="editable">Jamalgonj College · 2017</span></div>
-            <div class="education-item"><strong class="editable">Honours</strong><span class="editable">Dakshmin Suma College</span></div>
-            <div class="education-item"><strong class="editable">Subject / Department</strong><span class="editable">English Literature</span></div>
-            <div class="education-item"><strong class="editable">Graduation Year</strong><span class="editable">2021</span></div>
-            <div class="education-item"><strong class="editable">Masters</strong><span class="editable">English Literature · MC Colloge · 2023</span></div>
+            <div class="education-item">
+              <strong class="editable">SSC</strong>
+              <span class="editable">Jamalganj Model High School · 2015</span>
+            </div>
+            <div class="education-item">
+              <strong class="editable">HSC</strong>
+              <span class="editable">Jamalgonj College · 2017</span>
+            </div>
+            <div class="education-item">
+              <strong class="editable">Honours</strong>
+              <span class="editable">Dakshmin Surma College, Sylhet.</span>
+              <span><strong style="display:inline;font-size:12px" class="editable">Subject / Department</strong> <span class="editable">English Literature</span></span>
+              <span><strong style="display:inline;font-size:12px" class="editable">Graduation Year</strong> <span class="editable">2021</span></span>
+            </div>
+            <div class="education-item">
+              <strong class="editable">Masters</strong>
+              <span class="editable">MC College, Sylhet.</span>
+              <span><strong style="display:inline;font-size:12px" class="editable">Subject / Department</strong> <span class="editable">English Literature</span></span>
+              <span><strong style="display:inline;font-size:12px" class="editable">Graduation Year</strong> <span class="editable">2023</span></span>
+            </div>
           </div>
         </section>
 
         <section class="card section" id="family">
-          <div class="section-title"><div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><h3 class="editable">Family</h3><div class="rule"></div></div>
-          <div class="family-cards" id="familyList">
-            <article class="family-card">
-              <div class="family-card-head"><strong class="editable">Father</strong><span class="family-status">Deceased · 2024</span></div>
-              <p class="editable">Md Rezwan Kabir</p>
-              <span class="family-meta editable">Senior Teacher · Jamalganj Girls' High School</span>
+          <div class="section-title">
+            <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <h3 class="editable">Family</h3><div class="rule"></div>
+          </div>
+          <div class="family-profile-grid" id="familyList">
+            <article class="family-profile-card">
+              <h4 class="family-person-name editable">Md Rezwan Kabir</h4>
+              <div class="family-detail-row"><span class="label">Position</span><span class="value editable">Senior Teacher</span></div>
+              <div class="family-detail-row"><span class="label">Institution</span><span class="value editable">Jamalganj Girls' High School</span></div>
+              <div class="family-detail-row"><span class="label">Status</span><span class="value"><span class="family-status-badge editable">Deceased — 2024</span></span></div>
             </article>
-            <article class="family-card">
-              <div class="family-card-head"><strong class="editable">Mother</strong></div>
-              <p class="editable">Hasna Yasmin Piara</p>
-              <span class="family-meta editable">Retired Senior Teacher · Sachna Bazar High School</span>
+
+            <article class="family-profile-card">
+              <h4 class="family-person-name editable">Hasna Yasmin Piara</h4>
+              <div class="family-detail-row"><span class="label">Position</span><span class="value editable">Retired Senior Teacher</span></div>
+              <div class="family-detail-row"><span class="label">Institution</span><span class="value editable">Sachna Bazar High School</span></div>
+              <div class="family-detail-row"><span class="label">Status</span><span class="value editable">Retired</span></div>
             </article>
-            <article class="family-card">
-              <div class="family-card-head"><strong class="editable">Brother</strong><span class="family-status">Married</span></div>
-              <p class="editable">Tanjim Redwan</p>
-              <span class="family-meta editable">Employed and works with the same company/group</span>
-            </article>
-            <article class="family-card">
-              <div class="family-card-head"><strong class="editable">Family Address</strong></div>
-              <p class="editable">Jamalganj, Sunamganj</p>
-              <span class="family-meta editable">1 brother, no other siblings</span>
+
+            <article class="family-profile-card family-brother-card">
+              <h4 class="family-person-name editable">Tanjim Redwan</h4>
+              <div class="family-detail-row"><span class="label">Relation</span><span class="value editable">Brother</span></div>
+              <div class="family-detail-row"><span class="label">Siblings</span><span class="value editable">1 brother, no other siblings</span></div>
+              <div class="family-detail-row"><span class="label">Work</span><span class="value editable">Employed and works with the same company/group</span></div>
+              <div class="family-detail-row"><span class="label">Status</span><span class="value editable">Married</span></div>
             </article>
           </div>
         </section>
@@ -275,25 +401,48 @@
           <div class="book-list"><div class="book"><div class="book-mark">✦</div><strong class="editable">হেদায়েত</strong></div><div class="book"><div class="book-mark">✦</div><strong class="editable">বেলা ফুরাবার আগে</strong></div></div>
         </div>
       </section>
-            <section class="block mt6 section" id="gallery">
-        <a href="https://www.facebook.com/sadnan.snigdho/photos" target="_blank" rel="noopener" style="text-decoration:none;display:block" aria-label="Open Sadnan Kaabeer photos on Facebook">
-          <div class="card">
-            <div class="section-title"><div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div><h3 class="editable">Gallery</h3><div class="rule"></div></div>
-            <div class="gallery-grid" id="galleryList"><figure class="gallery-item"><img src="assets/profile.jpg" alt="Sadnan Kaabeer portrait" loading="lazy"><figcaption class="editable">View photos on Facebook ↗</figcaption></figure></div>
+            
+
+      
+
+      <section class="block mt6 section" id="gallery">
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+            <h3 class="editable">Gallery</h3><div class="rule"></div>
           </div>
-        </a>
+          <a class="gallery-item" href="https://www.facebook.com/sadnan.snigdho/photos" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:block">
+            <img src="assets/profile.jpg" alt="Sadnan Kaabeer portrait" loading="lazy">
+            <figcaption class="editable">View my photos on Facebook <span style="color:var(--gold);font-weight:700">↗</span></figcaption>
+          </a>
+        </div>
       </section>
 
       <section class="block mt6 section" id="social">
         <div class="card">
-          <div class="section-title"><div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/></svg></div><h3 class="editable">Social Links</h3><div class="rule"></div></div>
+          <div class="section-title">
+            <div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/></svg></div>
+            <h3 class="editable">Social Links</h3><div class="rule"></div>
+          </div>
           <div class="social-grid">
-            <a class="social-card" href="https://www.facebook.com/sadnan.snigdho" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v3H6v4h3v8h4v-8h3.2l.8-4H13V9c0-.7.3-1 1-1Z"/></svg><span class="editable">Facebook</span></span><span>↗</span></a>
-            <a class="social-card" href="https://www.linkedin.com/in/sadnan-snigdho" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><path d="M3 5.5A2 2 0 1 0 7 5.5 2 2 0 0 0 3 5.5Z"/><path d="M11 21V9h4v2c1-1.5 2.5-2.5 4.5-2.5 3 0 4.5 2 4.5 5.5v7h-4v-6.2c0-1.8-.6-3-2.3-3-1.8 0-2.7 1.2-2.7 3V21Z"/></svg><span class="editable">LinkedIn</span></span><span>↗</span></a>
-            <a class="social-card" href="https://x.com/snigdhosadnan" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.3 1.7-2.2-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.6 4.7a4 4 0 0 0 1.2 5.4c-.7 0-1.3-.2-1.8-.5 0 2 1.4 3.6 3.3 4-.6.2-1.2.2-1.8.1.5 1.6 2 2.8 3.8 2.8A8.1 8.1 0 0 1 3.3 18c-.4 0-.8 0-1.3-.1a11.4 11.4 0 0 0 6.2 1.8c7.4 0 11.5-6.1 11.5-11.5v-.5c.8-.6 1.5-1.2 2.1-2Z"/></svg><span class="editable">X</span></span><span>↗</span></a>
-            <a class="social-card" href="https://github.com/ssadnankabir-star" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.8 5.8 0 0 0 19.3 3c.1-.4.7-2-.1-4 0 0-1.3-.4-4.2 1.6a14.5 14.5 0 0 0-7.6 0C4.5-1.4 3.2-1 3.2-1c-.8 2-.2 3.6-.1 4A5.8 5.8 0 0 0 1.6 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 7.4 18v4"/><path d="M7.4 19c-3 .9-3-1.5-4.2-2"/></svg><span class="editable">GitHub</span></span><span>↗</span></a>
-            <a class="social-card" href="https://instagram.com/sad.snig" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg><span class="editable">Instagram</span></span><span>↗</span></a>
-            <a class="social-card" href="https://ssadnankabir-star.github.io/Bio-data/index.html" target="_blank" rel="noopener"><span style="display:flex;align-items:center;gap:8px"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg><span class="editable">Portfolio</span></span><span>↗</span></a>
+            <a class="social-card" href="https://www.facebook.com/sadnan.snigdho" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v3H6v4h3v8h4v-8h3.2l.8-4H13V9c0-.7.3-1 1-1Z"/></svg><span class="editable">Facebook</span></span><span>↗</span>
+            </a>
+            <a class="social-card" href="https://www.linkedin.com/in/sadnan-snigdho" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><path d="M3 5.5A2 2 0 1 0 7 5.5 2 2 0 0 0 3 5.5Z"/><path d="M11 21V9h4v2c1-1.5 2.5-2.5 4.5-2.5 3 0 4.5 2 4.5 5.5v7h-4v-6.2c0-1.8-.6-3-2.3-3-1.8 0-2.7 1.2-2.7 3V21Z"/></svg><span class="editable">LinkedIn</span></span><span>↗</span>
+            </a>
+            <a class="social-card" href="https://x.com/snigdhosadnan" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.3 1.7-2.2-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.4 11.4 0 0 1 3.6 4.7a4 4 0 0 0 1.2 5.4c-.7 0-1.3-.2-1.8-.5 0 2 1.4 3.6 3.3 4-.6.2-1.2.2-1.8.1.5 1.6 2 2.8 3.8 2.8A8.1 8.1 0 0 1 3.3 18c-.4 0-.8 0-1.3-.1a11.4 11.4 0 0 0 6.2 1.8c7.4 0 11.5-6.1 11.5-11.5v-.5c.8-.6 1.5-1.2 2.1-2Z"/></svg><span class="editable">X / Twitter</span></span><span>↗</span>
+            </a>
+            <a class="social-card" href="https://github.com/ssadnankabir-star" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.8 5.8 0 0 0 19.3 3c.1-.4.7-2-.1-4 0 0-1.3-.4-4.2 1.6a14.5 14.5 0 0 0-7.6 0C4.5-1.4 3.2-1 3.2-1c-.8 2-.2 3.6-.1 4A5.8 5.8 0 0 0 1.6 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 7.4 18v4"/><path d="M7.4 19c-3 .9-3-1.5-4.2-2"/></svg><span class="editable">GitHub</span></span><span>↗</span>
+            </a>
+            <a class="social-card" href="https://instagram.com/sad.snig" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg><span class="editable">Instagram</span></span><span>↗</span>
+            </a>
+            <a class="social-card" href="https://ssadnankabir-star.github.io/Bio-data/index.html" target="_blank" rel="noopener noreferrer">
+              <span class="social-main"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg><span class="editable">Portfolio</span></span><span>↗</span>
+            </a>
           </div>
         </div>
       </section>
