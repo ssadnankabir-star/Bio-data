@@ -545,6 +545,268 @@
     #contact a,.social-card{color:var(--emerald-deep)!important}
   }
 
+
+  /* Simple family layout */
+  .family-intro,.family-profile-grid{display:none!important}
+  .simple-family-grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .simple-family-card{
+    background:#FBF9F2;
+    border:1px solid #E9E1CF;
+    border-radius:12px;
+    padding:15px 16px;
+  }
+  .simple-family-role{
+    display:block;
+    margin-bottom:3px;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:var(--gold);
+  }
+  .simple-family-card h4{
+    margin:0 0 11px;
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    color:var(--emerald-deep);
+  }
+  .simple-family-row{
+    display:grid;
+    grid-template-columns:82px 1fr;
+    gap:10px;
+    padding:7px 0;
+    border-top:1px solid #EEE7D8;
+    align-items:start;
+  }
+  .simple-family-row span{
+    font-size:10px;
+    color:var(--ink-soft);
+  }
+  .simple-family-row strong{
+    font-size:11.5px;
+    line-height:1.5;
+    font-weight:600;
+    color:var(--ink);
+  }
+  @media(min-width:640px){
+    .simple-family-grid{grid-template-columns:1fr 1fr}
+    .simple-family-wide{grid-column:1/-1}
+  }
+  @media(max-width:430px){
+    .simple-family-row{grid-template-columns:1fr;gap:2px}
+  }
+
+
+  /* Family, simple but elegant */
+  .simple-family-grid,.family-intro,.family-profile-grid{display:none!important}
+  .family-clean-list{
+    display:grid;
+    gap:10px;
+  }
+  .family-clean-item{
+    padding:15px 16px;
+    border:1px solid #EAE1CF;
+    border-radius:13px;
+    background:linear-gradient(180deg,#FFF,#FCFAF4);
+    box-shadow:0 4px 14px rgba(15,61,46,.035);
+  }
+  .family-clean-item:hover{
+    border-color:#DFD0AA;
+    box-shadow:0 8px 20px rgba(15,61,46,.055);
+  }
+  .family-clean-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .family-clean-role{
+    display:block;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:2px;
+  }
+  .family-clean-item h4{
+    margin:0;
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    color:var(--emerald-deep);
+  }
+  .family-clean-item p{
+    margin:0 0 3px;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .family-clean-meta{
+    display:block;
+    font-size:11px;
+    color:var(--ink-soft);
+    line-height:1.55;
+  }
+  .family-clean-status{
+    flex:0 0 auto;
+    font-size:9.5px;
+    font-weight:700;
+    color:#8A6A12;
+    background:#FFF9E8;
+    border:1px solid #E9D9A8;
+    border-radius:999px;
+    padding:4px 7px;
+    white-space:nowrap;
+  }
+  .family-clean-status.neutral{
+    color:var(--emerald);
+    background:#F2F7EF;
+    border-color:#D9E5D4;
+  }
+  @media(min-width:700px){
+    .family-clean-list{grid-template-columns:1fr 1fr}
+    .family-clean-item:last-child{grid-column:1/-1}
+  }
+
+
+  /* Professional Life clean hierarchy */
+  .professional-clean{display:grid;gap:0}
+  .professional-description{
+    margin:16px 0 14px!important;
+    padding-top:14px;
+    border-top:1px solid #EEE6D5;
+  }
+  .arowa-role{
+    margin-top:2px;
+    padding:14px 15px;
+    background:#FBF9F2;
+    border:1px solid #E9E1CF;
+    border-radius:12px;
+  }
+  .arowa-role .kv-row{margin-bottom:8px}
+  .arowa-role .kv-row .k{color:var(--gold)}
+  .professional-note{
+    font-size:12.5px!important;
+    line-height:1.75!important;
+    color:var(--ink-soft)!important;
+  }
+
+
+  .professional-company-block{padding:15px 0;border-top:1px solid #EEE6D5}
+  .professional-company-block:first-of-type{padding-top:2px;border-top:0}
+  .professional-company-name{margin:0 0 9px;font-family:'Playfair Display',serif;font-size:17px;color:var(--emerald-deep)}
+  .professional-company-block .professional-description{margin:12px 0 0!important}
+
+
+  .halallab-group{
+    margin:-2px 0 14px;
+    padding:13px 15px;
+    border:1px solid #E7DDC7;
+    border-radius:13px;
+    background:linear-gradient(135deg,#FBF8EF,#FFFDF8);
+  }
+  .halallab-kicker{
+    display:block;
+    margin-bottom:2px;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .halallab-title{
+    margin:0 0 4px;
+    font-family:'Playfair Display',serif;
+    font-size:18px;
+    color:var(--emerald-deep);
+  }
+  .halallab-copy{
+    margin:0;
+    font-size:11.5px;
+    line-height:1.65;
+    color:var(--ink-soft);
+  }
+  .professional-company-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:9px;
+  }
+  .professional-company-head .professional-company-name{margin:0}
+  .working-badge{
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:4px 8px;
+    border-radius:999px;
+    border:1px solid #D8E5D3;
+    background:#F2F7EF;
+    color:var(--emerald);
+    font-size:9px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .working-badge::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:currentColor;
+  }
+
+
+  /* Simple Halallab heading */
+  .halallab-group{display:none!important}
+  .halallab-heading{
+    margin:0 0 13px;
+    padding:0;
+    border:0;
+    background:none;
+    box-shadow:none;
+  }
+  .halallab-heading .halallab-title{
+    margin:0 0 3px;
+    font-family:'Playfair Display',serif;
+    font-size:18px;
+    color:var(--emerald-deep);
+  }
+  .halallab-heading .halallab-copy{
+    margin:0;
+    font-size:11.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+
+
+  .header{position:relative}
+  .header-admin-link{
+    position:absolute;
+    top:8px;
+    right:8px;
+    width:34px;
+    height:34px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--emerald);
+    background:rgba(255,255,255,.78);
+    border:1px solid #E8DFC9;
+    box-shadow:0 6px 16px rgba(15,61,46,.06);
+    text-decoration:none;
+    transition:.2s ease;
+  }
+  .header-admin-link:hover{transform:translateY(-1px);border-color:#D7C38D;background:#fff}
+  .header-admin-link .icon{width:15px;height:15px}
+  @media(max-width:600px){
+    .header-admin-link{top:4px;right:2px;width:32px;height:32px}
+  }
+  @media print{.header-admin-link{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -571,6 +833,10 @@
       </nav>
 
       <header class="header section" id="home">
+        <a class="header-admin-link" href="admin.html" aria-label="Open admin panel" title="Admin">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21h-4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H3v-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V3h4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>
+        </a>
+
         <p class="eyebrow">Personal Profile</p>
         <div class="star-divider"><div class="line l"></div><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg><div class="line r"></div></div>
         <h1 class="title editable">Sadnan Kaabeer</h1>
@@ -595,7 +861,7 @@
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Date of Birth</div><div class="value editable">21 April 1999</div></div></div>
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Age</div><div class="value editable">27 years</div></div></div>
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Height</div><div class="value editable">5'8&quot;</div></div></div>
-          <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Weight</div><div class="value editable">99 kg</div></div></div>
+          <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Weight</div><div class="value editable">95 kg</div></div></div>
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Blood Group</div><div class="value editable">B+</div></div></div>
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Nationality</div><div class="value editable">Bangladeshi</div></div></div>
           <div class="stat-card"><div class="circ">◦</div><div><div class="label editable">Religion</div><div class="value editable">Islam</div></div></div>
@@ -644,116 +910,81 @@
         <section class="card section family-section" id="family">
           <div class="section-title">
             <div class="icon-box">
-              <svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.74"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              <svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             </div>
-            <h3 class="editable">Family</h3>
-            <div class="rule"></div>
+            <h3 class="editable">Family</h3><div class="rule"></div>
           </div>
 
-          <div class="family-intro">
-            <span class="family-intro-icon" aria-hidden="true">
-              <svg class="icon" viewBox="0 0 24 24"><path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10Z"/></svg>
-            </span>
-            <p>A close-knit family rooted in education, responsibility, and mutual support.</p>
-          </div>
+          <div class="family-clean-list" id="familyList">
+            <div class="family-clean-item">
+              <div class="family-clean-head">
+                <div>
+                  <span class="family-clean-role">Father</span>
+                  <h4 class="editable">Md Rezwan Kabir</h4>
+                </div>
+                <span class="family-clean-status editable">Deceased · 2024</span>
+              </div>
+              <p class="editable">Senior Teacher</p>
+              <span class="family-clean-meta editable">Jamalganj Girls' High School</span>
+            </div>
 
-          <div class="family-profile-grid" id="familyList">
-            <article class="family-profile-card family-parent-card">
-              <div class="family-card-top">
-                <div class="family-avatar" aria-hidden="true">
-                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <div class="family-clean-item">
+              <div class="family-clean-head">
+                <div>
+                  <span class="family-clean-role">Mother</span>
+                  <h4 class="editable">Hasna Yasmin Piara</h4>
                 </div>
-                <div class="family-heading-copy">
-                  <span class="family-relation">Father</span>
-                  <h4 class="family-person-name editable">Md Rezwan Kabir</h4>
-                </div>
-                <span class="family-status-badge editable">Deceased · 2024</span>
+                <span class="family-clean-status neutral editable">Retired</span>
               </div>
-              <div class="family-info-list">
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </span>
-                  <div><span class="family-label">Position</span><strong class="editable">Senior Teacher</strong></div>
-                </div>
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg>
-                  </span>
-                  <div><span class="family-label">Institution</span><strong class="editable">Jamalganj Girls' High School</strong></div>
-                </div>
-              </div>
-            </article>
+              <p class="editable">Retired Senior Teacher</p>
+              <span class="family-clean-meta editable">Sachna Bazar High School</span>
+            </div>
 
-            <article class="family-profile-card family-parent-card">
-              <div class="family-card-top">
-                <div class="family-avatar" aria-hidden="true">
-                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <div class="family-clean-item">
+              <div class="family-clean-head">
+                <div>
+                  <span class="family-clean-role">Brother</span>
+                  <h4 class="editable">Tanjim Redwan</h4>
                 </div>
-                <div class="family-heading-copy">
-                  <span class="family-relation">Mother</span>
-                  <h4 class="family-person-name editable">Hasna Yasmin Piara</h4>
-                </div>
-                <span class="family-status-badge soft editable">Retired</span>
+                <span class="family-clean-status neutral editable">Married</span>
               </div>
-              <div class="family-info-list">
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </span>
-                  <div><span class="family-label">Position</span><strong class="editable">Retired Senior Teacher</strong></div>
-                </div>
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg>
-                  </span>
-                  <div><span class="family-label">Institution</span><strong class="editable">Sachna Bazar High School</strong></div>
-                </div>
-              </div>
-            </article>
-
-            <article class="family-profile-card family-brother-card">
-              <div class="family-card-top">
-                <div class="family-avatar brother" aria-hidden="true">
-                  <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-                </div>
-                <div class="family-heading-copy">
-                  <span class="family-relation">Brother</span>
-                  <h4 class="family-person-name editable">Tanjim Redwan</h4>
-                </div>
-                <span class="family-status-badge soft editable">Married</span>
-              </div>
-              <div class="family-info-list brother-info">
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-                  </span>
-                  <div><span class="family-label">Siblings</span><strong class="editable">1 brother, no other siblings</strong></div>
-                </div>
-                <div class="family-info-item">
-                  <span class="family-info-icon" aria-hidden="true">
-                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </span>
-                  <div><span class="family-label">Work</span><strong class="editable">Employed and works with the same company/group</strong></div>
-                </div>
-              </div>
-            </article>
+              <p class="editable">Employed and works with the same company/group</p>
+              <span class="family-clean-meta editable">1 brother, no other siblings</span>
+            </div>
           </div>
         </section>
       </div>
 
       <section class="block mt6 section" id="professional">
         <div class="card">
-          <div class="section-title"><div class="icon-box"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><h3 class="editable">Professional Life</h3><div class="rule"></div></div>
-          <div class="two-col" style="margin-top:0">
-            <div>
-              <div class="kv-row"><span class="k editable">Main Company / Group</span><span class="v editable">Halallab</span></div>
-              <div class="kv-row"><span class="k editable">Associated With</span><span class="v editable">Hugeicons and Arowa Premium</span></div>
-              <div class="kv-row"><span class="k editable">Designation</span><span class="v editable">Social Media Manager</span></div>
-              <div class="kv-row"><span class="k editable">Arowa Premium</span><span class="v editable">Brand Model · Joined 27 July 2026</span></div>
-              <div class="kv-row"><span class="k editable">Start Date</span><span class="v editable">15 September 2025</span></div>
+          <div class="section-title">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </div>
-            <p class="body-text editable">Managing social media content and digital communication, planning and publishing engaging content, supporting brand visibility, interacting with audiences, and contributing to social media growth and marketing activities.</p>
+            <h3 class="editable">Professional Life</h3><div class="rule"></div>
+          </div>
+
+          <div class="halallab-heading">
+            <h4 class="halallab-title editable">Halallab</h4>
+            <p class="halallab-copy editable">Currently working across Hugeicons and Arowa Premium under the Halallab group.</p>
+          </div>
+
+          <div class="professional-company-block">
+            <div class="professional-company-head">
+              <h4 class="professional-company-name editable">Hugeicons</h4>
+            </div>
+            <div class="kv-row"><span class="k editable">Designation</span><span class="v editable">Social Media Manager</span></div>
+            <div class="kv-row"><span class="k editable">Start Date</span><span class="v editable">15 September 2025</span></div>
+            <p class="body-text professional-description editable">Managing social media content and digital communication, planning and publishing engaging content, supporting brand visibility, interacting with audiences, and contributing to social media growth and marketing activities.</p>
+          </div>
+
+          <div class="professional-company-block">
+            <div class="professional-company-head">
+              <h4 class="professional-company-name editable">Arowa Premium</h4>
+            </div>
+            <div class="kv-row"><span class="k editable">Designation</span><span class="v editable">Brand Model</span></div>
+            <div class="kv-row"><span class="k editable">Start Date</span><span class="v editable">27 July 2026</span></div>
+            <p class="body-text professional-description editable">Arowa Premium is an Attar &amp; Perfume brand by Halallab, where I work as a Brand Model and contribute to the brand’s visual presentation and promotional content.</p>
           </div>
         </div>
       </section>
@@ -855,7 +1086,6 @@
   <button type="button" id="printBtn">Print</button>
   <button type="button" id="shareBtn">Share</button>
   <button type="button" id="copyBtn">Copy link</button>
-  <a href="admin.html">Admin</a>
 </nav>
 
 <div class="share-modal" id="shareModal" aria-hidden="true">
@@ -914,11 +1144,12 @@
       </div>
     </div>
     <div class="export-working" id="exportWorking">Preparing from the current live profile...</div>
-    <p class="live-share-note">PDF uses the current rendered profile and keeps real links clickable. Images are generated page-by-page from complete sections.</p>
+    <p class="live-share-note">PDF is generated directly from the current live profile with clickable links. No Print or Save as PDF step is required. Images are generated page-by-page from complete sections.</p>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="config/firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
