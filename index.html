@@ -486,6 +486,65 @@
     .family-status-badge{margin-left:51px}
   }
 
+
+  /* Live export UI */
+  .live-share-modal{
+    position:fixed;inset:0;z-index:2147483600;display:none;align-items:flex-end;justify-content:center;
+    padding:20px;background:rgba(10,43,32,.48);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+  }
+  .live-share-modal.show{display:flex}
+  .live-share-sheet{
+    width:min(520px,100%);background:#fff;border:1px solid #E9DFC9;border-radius:22px;padding:20px;
+    box-shadow:0 28px 80px rgba(0,0,0,.24)
+  }
+  .live-share-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+  .live-share-head .eyebrow{margin-bottom:5px}
+  .live-share-head h3{margin:0;font-family:'Playfair Display',serif;color:var(--emerald-deep);font-size:23px}
+  .live-share-close{width:36px;height:36px;border:0;border-radius:999px;background:#F5F1E7;color:var(--ink);font-size:21px;cursor:pointer}
+  .live-share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .live-share-option{
+    min-height:100px;border:1px solid #E9DFC9;background:#FBF9F2;border-radius:15px;padding:14px 10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;
+    color:var(--emerald-deep);font:600 12px 'Inter',sans-serif;text-align:center
+  }
+  .live-share-option:hover{border-color:var(--gold-light);transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,61,46,.06)}
+  .live-share-option svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .live-share-note{margin:13px 0 0;font-size:11px;line-height:1.65;color:var(--ink-soft)}
+  .image-page-picker{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #EEE6D5}
+  .image-page-picker.show{display:block}
+  .image-page-picker p{font-size:11px;color:var(--ink-soft);margin:0 0 8px}
+  .image-page-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .image-page-buttons button{border:1px solid #E9DFC9;background:#fff;border-radius:11px;padding:10px;font:600 11px 'Inter',sans-serif;cursor:pointer;color:var(--emerald-deep)}
+  .export-working{display:none;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--ink-soft)}
+  .export-working.show{display:flex}
+  .export-working::before{content:"";width:13px;height:13px;border-radius:50%;border:2px solid #D9CFB8;border-top-color:var(--emerald);animation:exportSpin .8s linear infinite}
+  @keyframes exportSpin{to{transform:rotate(360deg)}}
+  @media(max-width:520px){
+    .live-share-modal{padding:10px}
+    .live-share-grid{grid-template-columns:1fr}
+    .live-share-option{min-height:auto;flex-direction:row;justify-content:flex-start;padding:13px 15px}
+  }
+
+  /* Print document: uses live content but professional A4 pagination. */
+  @media print{
+    html,body{background:#fff!important}
+    body{padding:0!important}
+    .profile-nav,#portfolioTools,.live-share-modal{display:none!important}
+    .wrap{max-width:none!important;width:100%!important;margin:0!important;box-shadow:none!important;border-radius:0!important}
+    .frame-outer{border:0!important;margin:0!important}
+    .frame-inner{border:0!important;margin:0!important;padding:0!important;overflow:visible!important}
+    .wm,.corner{display:none!important}
+    .header{padding:8mm 10mm 5mm!important;break-after:avoid-page}
+    .section,.card{break-inside:avoid-page;page-break-inside:avoid}
+    .block,.two-col{margin-top:5mm!important}
+    .card{box-shadow:none!important;border:1px solid #E7DEC9!important}
+    #personal,#about,#education,#family,#professional,#skills,#interests,#books,#gallery,#social,#contact{scroll-margin-top:0!important}
+    #gallery img{max-height:115mm!important;object-fit:cover!important}
+    a{color:inherit!important;text-decoration:none!important}
+    a[href]::after{content:none!important}
+    #contact a,.social-card{color:var(--emerald-deep)!important}
+  }
+
 </style>
 </head>
 <body>
@@ -823,8 +882,43 @@
   </div>
 </div>
 
+<div class="live-share-modal" id="liveShareModal" aria-hidden="true">
+  <div class="live-share-sheet" role="dialog" aria-modal="true" aria-labelledby="liveShareTitle">
+    <div class="live-share-head">
+      <div>
+        <p class="eyebrow">Export current profile</p>
+        <h3 id="liveShareTitle">Share</h3>
+      </div>
+      <button type="button" class="live-share-close" id="liveShareClose" aria-label="Close">×</button>
+    </div>
+    <div class="live-share-grid">
+      <button type="button" class="live-share-option" id="liveShareLink">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/></svg>
+        <span>Share live link</span>
+      </button>
+      <button type="button" class="live-share-option" id="liveSharePdf">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 15h8M8 18h5"/></svg>
+        <span>Professional PDF</span>
+      </button>
+      <button type="button" class="live-share-option" id="liveShareImage">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        <span>Share page image</span>
+      </button>
+    </div>
+    <div class="image-page-picker" id="imagePagePicker">
+      <p>Choose one complete page. No section will be cut in the middle.</p>
+      <div class="image-page-buttons">
+        <button type="button" data-export-page="1">Page 1</button>
+        <button type="button" data-export-page="2">Page 2</button>
+        <button type="button" data-export-page="3">Page 3</button>
+      </div>
+    </div>
+    <div class="export-working" id="exportWorking">Preparing from the current live profile...</div>
+    <p class="live-share-note">PDF uses the current rendered profile and keeps real links clickable. Images are generated page-by-page from complete sections.</p>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="config/firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -850,74 +944,10 @@ document.getElementById("printBtn")?.addEventListener("click",()=>window.print()
 document.getElementById("copyBtn")?.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(location.href);alert("Link copied.")}catch{prompt("Copy this link:",location.href)}});
 
 
-const shareModal=document.getElementById("shareModal");
-const openShare=()=>{shareModal?.classList.add("show");shareModal?.setAttribute("aria-hidden","false")};
-const closeShare=()=>{shareModal?.classList.remove("show");shareModal?.setAttribute("aria-hidden","true")};
-document.getElementById("shareBtn")?.addEventListener("click",openShare);
-document.getElementById("shareClose")?.addEventListener("click",closeShare);
-shareModal?.addEventListener("click",(e)=>{if(e.target===shareModal) closeShare()});
-document.addEventListener("keydown",(e)=>{if(e.key==="Escape") closeShare()});
 
-async function shareFile(file,title,text){
-  if(navigator.canShare && navigator.canShare({files:[file]})){
-    await navigator.share({files:[file],title,text});
-    return true;
-  }
-  return false;
-}
-
-document.getElementById("shareLinkBtn")?.addEventListener("click",async()=>{
-  closeShare();
-  const data={title:"Sadnan Kaabeer — Personal Profile",text:"Sadnan Kaabeer — Personal Profile",url:location.href};
-  if(navigator.share){try{await navigator.share(data);return}catch(e){if(e?.name==="AbortError") return}}
-  try{await navigator.clipboard.writeText(location.href);alert("Profile link copied.")}catch{prompt("Copy this link:",location.href)}
-});
-
-document.getElementById("shareImageBtn")?.addEventListener("click",async()=>{
-  closeShare();
-  const target=document.querySelector(".wrap");
-  if(!target || !window.html2canvas){alert("Image sharing is unavailable right now.");return}
-  const canvas=await window.html2canvas(target,{scale:2,useCORS:true,backgroundColor:"#FBF7EE",logging:false});
-  const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png",0.95));
-  if(!blob) return;
-  const file=new File([blob],"sadnan-kaabeer-personal-profile.png",{type:"image/png"});
-  try{
-    if(await shareFile(file,"Sadnan Kaabeer — Personal Profile","Personal Profile")) return;
-  }catch(e){if(e?.name==="AbortError") return}
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-});
-
-document.getElementById("sharePdfBtn")?.addEventListener("click",async()=>{
-  closeShare();
-  const target=document.querySelector(".wrap");
-  if(!target || !window.html2canvas || !window.jspdf?.jsPDF){window.print();return}
-  const canvas=await window.html2canvas(target,{scale:1.6,useCORS:true,backgroundColor:"#FBF7EE",logging:false});
-  const imgData=canvas.toDataURL("image/jpeg",0.92);
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-  const pageW=pdf.internal.pageSize.getWidth();
-  const pageH=pdf.internal.pageSize.getHeight();
-  const imgW=pageW;
-  const imgH=canvas.height*imgW/canvas.width;
-  let heightLeft=imgH;
-  let position=0;
-  pdf.addImage(imgData,"JPEG",0,position,imgW,imgH);
-  heightLeft-=pageH;
-  while(heightLeft>0){
-    position=heightLeft-imgH;
-    pdf.addPage();
-    pdf.addImage(imgData,"JPEG",0,position,imgW,imgH);
-    heightLeft-=pageH;
-  }
-  const blob=pdf.output("blob");
-  const file=new File([blob],"sadnan-kaabeer-personal-profile.pdf",{type:"application/pdf"});
-  try{
-    if(await shareFile(file,"Sadnan Kaabeer — Personal Profile","Personal Profile PDF")) return;
-  }catch(e){if(e?.name==="AbortError") return}
-  pdf.save(file.name);
-});
 
 loadPublished();
 </script>
+<script src="js/live-export.js"></script>
 </body>
 </html>
