@@ -39,7 +39,6 @@
   });
 
   // Keep normal page printing separate from Professional PDF.
-  document.getElementById("printBtn")?.addEventListener("click", () => window.print());
 
   const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
 
@@ -418,6 +417,89 @@
       setWorking(false);
     }
   });
+
+
+  async function createImageBlob(pageNumber) {
+    if (!window.html2canvas) throw new Error("Image export library did not load.");
+    let stage;
+    try {
+      await document.fonts?.ready;
+      stage = clonePage(pageNumber);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const canvas = await window.html2canvas(stage.firstElementChild, {
+        scale: 1.45,
+        useCORS: true,
+        backgroundColor: "#FBF7EE",
+        logging: false,
+        imageTimeout: 12000
+      });
+      return await new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error("Image creation failed.")),
+          "image/jpeg",
+          0.93
+        );
+      });
+    } finally {
+      stage?.remove();
+    }
+  }
+
+  async function shareThreeImages() {
+    setWorking(true, "Creating all 3 profile images...");
+    try {
+      const blobs = [];
+      for (let page = 1; page <= 3; page += 1) {
+        setWorking(true, `Creating image ${page} of 3...`);
+        blobs.push(await createImageBlob(page));
+      }
+
+      const files = blobs.map((blob, index) => new File(
+        [blob],
+        `sadnan-kaabeer-profile-page-${index + 1}.jpg`,
+        { type: "image/jpeg" }
+      ));
+
+      closeModal();
+
+      if (navigator.canShare?.({ files })) {
+        try {
+          await navigator.share({
+            files,
+            title: "Sadnan Kaabeer - Personal Profile",
+            text: "Personal Profile"
+          });
+          return;
+        } catch (error) {
+          if (error?.name === "AbortError") return;
+          console.warn("Multi-file share failed, falling back to downloads.", error);
+        }
+      }
+
+      // Fallback: download all 3 files one by one.
+      files.forEach((file, index) => {
+        setTimeout(() => {
+          const url = URL.createObjectURL(file);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = file.name;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1500);
+        }, index * 350);
+      });
+
+      alert("Your browser cannot share multiple files together, so all 3 images were downloaded.");
+    } catch (error) {
+      console.error(error);
+      alert("Could not create all 3 images. Please reload the page and try again.");
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  document.getElementById("liveShareAllImages")?.addEventListener("click", shareThreeImages);
 
   document.getElementById("liveShareImage")?.addEventListener("click", () => {
     picker?.classList.toggle("show");
