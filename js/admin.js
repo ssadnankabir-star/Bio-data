@@ -26,6 +26,7 @@ const C = window.PROFILE_FIREBASE_CONFIG || {};
 const ADMIN = (window.PROFILE_ADMIN_EMAIL || "").toLowerCase();
 const $ = (id) => document.getElementById(id);
 const state = { history: [], future: [], html: "", selected: null, ready: false };
+console.info("Firebase config loaded", configured ? "checking" : "", C.projectId || "missing-projectId", ADMIN || "missing-admin-email");
 const localKey = "sadnan-personal-profile-draft-v2";
 
 function msg(text, error = false) {
