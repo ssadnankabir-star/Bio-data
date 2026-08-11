@@ -136,43 +136,52 @@
   };
 
   let currentLang = localStorage.getItem("profile.language") === "bn" ? "bn" : "en";
+  let observer = null;
   let applying = false;
-
-  function translateTextNode(node, lang) {
-    if (!node || node.nodeType !== Node.TEXT_NODE) return;
-    const parent = node.parentElement;
-    if (!parent || parent.closest("script,style,svg,[data-no-i18n]")) return;
-
-    if (node.__profileEnglish === undefined) {
-      node.__profileEnglish = node.nodeValue;
-    }
-
-    const englishRaw = node.__profileEnglish;
-    const trimmed = englishRaw.trim();
-    if (!trimmed) return;
-
-    if (lang === "en") {
-      node.nodeValue = englishRaw;
-      return;
-    }
-
-    const translated = BN[trimmed];
-    if (!translated) return;
-
-    const lead = englishRaw.match(/^\s*/)?.[0] || "";
-    const trail = englishRaw.match(/\s*$/)?.[0] || "";
-    node.nodeValue = lead + translated + trail;
-  }
-
-  function translateTree(root, lang) {
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach((node) => translateTextNode(node, lang));
-  }
 
   function toBanglaDigits(value) {
     return String(value).replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
+  }
+
+  function rememberOriginalText(root = document.body) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      const parent = node.parentElement;
+      if (!parent || parent.closest("script,style,svg,[data-no-i18n]")) continue;
+      if (node.__profileEnglish === undefined) node.__profileEnglish = node.nodeValue;
+    }
+  }
+
+  function applyTextLanguage(root, lang) {
+    rememberOriginalText(root);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const node of nodes) {
+      const parent = node.parentElement;
+      if (!parent || parent.closest("script,style,svg,[data-no-i18n]")) continue;
+
+      const englishRaw = node.__profileEnglish ?? node.nodeValue;
+      const trimmed = englishRaw.trim();
+      if (!trimmed) continue;
+
+      if (lang === "en") {
+        node.nodeValue = englishRaw;
+        continue;
+      }
+
+      const translated = BN[trimmed];
+      if (!translated) {
+        node.nodeValue = englishRaw;
+        continue;
+      }
+
+      const lead = englishRaw.match(/^\s*/)?.[0] || "";
+      const trail = englishRaw.match(/\s*$/)?.[0] || "";
+      node.nodeValue = lead + translated + trail;
+    }
   }
 
   function updateMeta(lang) {
@@ -188,12 +197,12 @@
   function updateYear(lang) {
     const year = document.getElementById("year");
     if (!year) return;
-    const englishYear = String(new Date().getFullYear());
-    year.textContent = lang === "bn" ? toBanglaDigits(englishYear) : englishYear;
+    const value = String(new Date().getFullYear());
+    year.textContent = lang === "bn" ? toBanglaDigits(value) : value;
   }
 
   function updateButtons(lang) {
-    document.querySelectorAll("#languageSwitch [data-lang]").forEach((button) => {
+    document.querySelectorAll("#languageSwitch [data-lang]").forEach(button => {
       const active = button.dataset.lang === lang;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
@@ -201,39 +210,76 @@
   }
 
   function applyLanguage(lang, persist = true) {
+    const nextLang = lang === "bn" ? "bn" : "en";
     if (applying) return;
     applying = true;
-    currentLang = lang === "bn" ? "bn" : "en";
+
+    if (observer) observer.disconnect();
+
+    currentLang = nextLang;
     document.documentElement.lang = currentLang;
-    translateTree(document.body, currentLang);
+
+    applyTextLanguage(document.body, currentLang);
     updateMeta(currentLang);
     updateYear(currentLang);
     updateButtons(currentLang);
+
     if (persist) localStorage.setItem("profile.language", currentLang);
+
     applying = false;
+
+    if (observer) {
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
 
     document.dispatchEvent(new CustomEvent("profilelanguagechange", {
       detail: { lang: currentLang }
     }));
   }
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", event => {
     const button = event.target.closest("#languageSwitch [data-lang]");
     if (!button) return;
-    applyLanguage(button.dataset.lang);
+    event.preventDefault();
+    event.stopPropagation();
+    applyLanguage(button.dataset.lang, true);
   });
 
-  // Re-apply language after Firebase/public content replaces part of the page.
-  const observer = new MutationObserver((mutations) => {
-    if (applying || currentLang !== "bn") return;
-    let needsApply = false;
+  observer = new MutationObserver(mutations => {
+    if (applying) return;
+
+    const addedRoots = [];
     for (const mutation of mutations) {
-      if ([...mutation.addedNodes].some(node => node.nodeType === 1 || node.nodeType === 3)) {
-        needsApply = true;
-        break;
-      }
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+          addedRoots.push(node);
+        }
+      });
     }
-    if (needsApply) requestAnimationFrame(() => applyLanguage("bn", false));
+
+    if (!addedRoots.length) return;
+
+    requestAnimationFrame(() => {
+      if (applying) return;
+      applying = true;
+      observer.disconnect();
+
+      for (const node of addedRoots) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          rememberOriginalText(node.parentElement || document.body);
+          applyTextLanguage(node.parentElement || document.body, currentLang);
+        } else {
+          rememberOriginalText(node);
+          applyTextLanguage(node, currentLang);
+        }
+      }
+
+      updateButtons(currentLang);
+      updateYear(currentLang);
+
+      applying = false;
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
@@ -246,5 +292,7 @@
     toBanglaDigits
   };
 
+  // Capture the original English DOM once, then apply the saved language.
+  rememberOriginalText(document.body);
   applyLanguage(currentLang, false);
 })();
