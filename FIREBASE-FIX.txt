@@ -1,0 +1,2 @@
+This build inlines Firebase config and admin email in admin.html and index.html, while also keeping config/firebase-config.js. This avoids GitHub Pages path/cache issues.
+After uploading, replace all existing repository files, wait 1-2 minutes, then hard refresh.
