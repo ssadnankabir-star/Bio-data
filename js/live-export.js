@@ -11,6 +11,10 @@
   const PDF_WIDTH_MM = 210;
   const PDF_HEIGHT_MM = 297;
   const RENDER_SCALE = 2;
+  const isBangla = () => document.documentElement.lang === "bn";
+  const L = (en, bn) => isBangla() ? bn : en;
+  const exportName = () => L("Sadnan Kaabeer", "সাদনান কাবীর (স্নিগ্ধ)");
+  const exportProfileTitle = () => L(exportProfileTitle(), "ব্যক্তিগত প্রোফাইল");
 
   const pageDefinitions = [
     ["#home", "#personal", "#about"],
@@ -29,7 +33,7 @@
     picker?.classList.remove("show");
   };
 
-  const setWorking = (on, text = "Preparing...") => {
+  const setWorking = (on, text = L("Preparing...", "প্রস্তুত করা হচ্ছে...")) => {
     if (!working) return;
     working.textContent = text;
     working.classList.toggle("show", Boolean(on));
@@ -50,8 +54,8 @@
 
   document.getElementById("liveShareLink")?.addEventListener("click", async () => {
     const payload = {
-      title: "Sadnan Kaabeer - Personal Profile",
-      text: "Sadnan Kaabeer - Personal Profile",
+      title: `${exportName()} - ${exportProfileTitle()}`,
+      text: `${exportName()} - ${exportProfileTitle()}`,
       url: location.href
     };
 
@@ -67,7 +71,7 @@
 
     try {
       await navigator.clipboard.writeText(location.href);
-      alert("Profile link copied.");
+      alert(L("Profile link copied.", "প্রোফাইলের লিংক কপি হয়েছে।"));
     } catch {
       prompt("Copy this link:", location.href);
     }
@@ -115,8 +119,8 @@
     const exportHeader = document.createElement("div");
     exportHeader.innerHTML = `
       <div style="text-align:center;margin:0 0 22px">
-        <div style="font:700 12px Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#B8860B;margin-bottom:7px">Personal Profile</div>
-        <div style="font:700 34px 'Playfair Display',serif;color:#0A2B20">Sadnan Kaabeer</div>
+        <div style="font:700 12px Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#B8860B;margin-bottom:7px">${exportProfileTitle()}</div>
+        <div style="font:700 34px ${isBangla() ? "'Noto Serif Bengali','Hind Siliguri',serif" : "'Playfair Display',serif"};color:#0A2B20">${exportName()}</div>
         <div style="width:70px;height:1px;background:#D4AF37;margin:11px auto 0"></div>
       </div>
     `;
@@ -143,7 +147,7 @@
     });
 
     const footer = document.createElement("div");
-    footer.textContent = `Page ${pageIndex + 1} · Sadnan Kaabeer · Personal Profile`;
+    footer.textContent = `${L("Page", "পেজ")} ${isBangla() ? window.profileI18n?.toBanglaDigits(pageIndex + 1) : pageIndex + 1} · ${exportName()} · ${exportProfileTitle()}`;
     Object.assign(footer.style, {
       textAlign: "center",
       marginTop: "18px",
@@ -216,7 +220,7 @@
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
 
     for (let pageNumber = 1; pageNumber <= 3; pageNumber += 1) {
-      setWorking(true, `Creating PDF page ${pageNumber} of 3...`);
+      setWorking(true, `${L("Creating PDF page", "PDF পেজ তৈরি হচ্ছে")} ${isBangla() ? window.profileI18n?.toBanglaDigits(pageNumber) : pageNumber} ${L("of", "এর")} ${isBangla() ? "৩" : "3"}...`);
       const { canvas, links } = await renderExportPage(pageNumber);
       const png = canvas.toDataURL("image/png");
 
@@ -245,8 +249,8 @@
       try {
         await navigator.share({
           files: [file],
-          title: "Sadnan Kaabeer - Personal Profile",
-          text: "Personal Profile PDF"
+          title: `${exportName()} - ${exportProfileTitle()}`,
+          text: L("Personal Profile PDF", "ব্যক্তিগত প্রোফাইল PDF")
         });
         return;
       } catch (error) {
@@ -258,14 +262,14 @@
   }
 
   document.getElementById("liveSharePdf")?.addEventListener("click", async () => {
-    setWorking(true, "Preparing high quality PDF...");
+    setWorking(true, L("Preparing high quality PDF...", "উচ্চমানের PDF প্রস্তুত করা হচ্ছে..."));
     try {
       const pdf = await createHighQualityPdf();
       closeModal();
       await sharePdf(pdf);
     } catch (error) {
       console.error(error);
-      alert("Could not create the PDF. Please reload the page and try again.");
+      alert(L("Could not create the PDF. Please reload the page and try again.", "PDF তৈরি করা যায়নি। পেজটি রিলোড করে আবার চেষ্টা করুন।"));
     } finally {
       setWorking(false);
     }
@@ -315,19 +319,19 @@
   }
 
   async function shareThreeImages() {
-    setWorking(true, "Creating all 3 profile images...");
+    setWorking(true, L("Creating all 3 profile images...", "প্রোফাইলের ৩টি ছবি তৈরি করা হচ্ছে..."));
     try {
       const files = [];
       for (let pageNumber = 1; pageNumber <= 3; pageNumber += 1) {
-        setWorking(true, `Creating image ${pageNumber} of 3...`);
+        setWorking(true, `${L("Creating image", "ছবি তৈরি হচ্ছে")} ${isBangla() ? window.profileI18n?.toBanglaDigits(pageNumber) : pageNumber} ${L("of", "এর")} ${isBangla() ? "৩" : "3"}...`);
         files.push(await createPageImageFile(pageNumber));
       }
 
       closeModal();
-      const shared = await shareFiles(files, "Sadnan Kaabeer - Personal Profile", "Personal Profile");
+      const shared = await shareFiles(files, `${exportName()} - ${exportProfileTitle()}`, exportProfileTitle());
       if (!shared) {
         await downloadFiles(files);
-        alert("This browser cannot share 3 files together, so all 3 images were downloaded.");
+        alert(L("This browser cannot share 3 files together, so all 3 images were downloaded.", "এই ব্রাউজার একসাথে ৩টি ফাইল শেয়ার করতে পারে না, তাই ৩টি ছবিই ডাউনলোড করা হয়েছে।"));
       }
     } catch (error) {
       console.error(error);
@@ -367,7 +371,7 @@
   }
 
   async function shareThreeImagesTogether() {
-    setWorking(true, "Creating all 3 profile images...");
+    setWorking(true, L("Creating all 3 profile images...", "প্রোফাইলের ৩টি ছবি তৈরি করা হচ্ছে..."));
     try {
       const blobs = [];
       for (let page = 1; page <= 3; page += 1) {
@@ -388,8 +392,8 @@
         try {
           await navigator.share({
             files,
-            title: "Sadnan Kaabeer - Personal Profile",
-            text: "Personal Profile"
+            title: `${exportName()} - ${exportProfileTitle()}`,
+            text: exportProfileTitle()
           });
           return;
         } catch (error) {
@@ -436,7 +440,7 @@
       try {
         const file = await createPageImageFile(pageNumber);
         closeModal();
-        const shared = await shareFiles([file], "Sadnan Kaabeer - Personal Profile", `Profile page ${pageNumber}`);
+        const shared = await shareFiles([file], `${exportName()} - ${exportProfileTitle()}`, `Profile page ${pageNumber}`);
         if (!shared) await downloadFiles([file]);
       } catch (error) {
         console.error(error);
