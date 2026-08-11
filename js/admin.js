@@ -22,11 +22,23 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
-const C = window.PROFILE_FIREBASE_CONFIG || {};
-const ADMIN = (window.PROFILE_ADMIN_EMAIL || "").toLowerCase();
+const FALLBACK_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC5broplCmaQNHGB-PT3fsqEsH_Mc2Stvg",
+  authDomain: "sadnan-personal-profile.firebaseapp.com",
+  projectId: "sadnan-personal-profile",
+  storageBucket: "sadnan-personal-profile.firebasestorage.app",
+  messagingSenderId: "363364801383",
+  appId: "1:363364801383:web:93fcb97844b8774efcadc2",
+  measurementId: "G-GBTFDFG5V8"
+};
+const C = {
+  ...FALLBACK_FIREBASE_CONFIG,
+  ...(window.PROFILE_FIREBASE_CONFIG || {})
+};
+const ADMIN = (window.PROFILE_ADMIN_EMAIL || "ssadnankabir@gmail.com").toLowerCase();
+const ADMIN_UID = window.PROFILE_ADMIN_UID || "VM9V5M67iHO66p4SOFw43RgB3ml2";
 const $ = (id) => document.getElementById(id);
 const state = { history: [], future: [], html: "", selected: null, ready: false };
-console.info("Firebase config loaded", configured ? "checking" : "", C.projectId || "missing-projectId", ADMIN || "missing-admin-email");
 const localKey = "sadnan-personal-profile-draft-v2";
 
 function msg(text, error = false) {
@@ -35,7 +47,7 @@ function msg(text, error = false) {
 }
 
 function configured() {
-  return Boolean(C.apiKey && C.authDomain && C.projectId && C.appId);
+  return Boolean(C.apiKey && C.authDomain && C.projectId && C.storageBucket && C.messagingSenderId && C.appId);
 }
 
 function stripUnsafeMarkup(html) {
@@ -186,7 +198,11 @@ $("login").onclick = async () => {
     const email = $("email").value.trim().toLowerCase();
     const password = $("password").value;
     if (email !== ADMIN) throw new Error("Only the configured administrator email is allowed.");
-    await signInWithEmailAndPassword(auth, email, password);
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    if (credential.user.uid !== ADMIN_UID) {
+      await signOut(auth);
+      throw new Error("This Firebase user is not authorized for this admin panel.");
+    }
     $("password").value = "";
     msg("");
   } catch (error) {
@@ -211,7 +227,7 @@ $("logout").onclick = () => auth && signOut(auth);
 async function saveToCloud() {
   persistLocal();
   if (!configured()) return msg("Local draft saved. Firebase config is required for cloud publishing.", true);
-  if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== ADMIN) return msg("Please sign in as the administrator.", true);
+  if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== ADMIN || auth.currentUser.uid !== ADMIN_UID) return msg("Please sign in as the administrator.", true);
   try {
     await setDoc(doc(db, "publicContent", "profile"), {
       html: state.html,
