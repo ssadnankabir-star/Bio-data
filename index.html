@@ -20,7 +20,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sadnan Kaabeer","image":"https://ssadnankabir-star.github.io/Bio-data/assets/profile.jpg","email":"mailto:sadnan@hugeicons.com","url":"https://ssadnankabir-star.github.io/Bio-data/index.html","sameAs":["https://www.facebook.com/sadnan.snigdho","https://www.linkedin.com/in/sadnan-snigdho","https://github.com/ssadnankabir-star","https://instagram.com/sad.snig"]}</script>
 <title>Sadnan Kaabeer — Personal Profile</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
   :root{
     --emerald:#0F3D2E;
@@ -848,6 +848,31 @@
     .language-switch{flex:0 0 auto;margin-left:2px}
   }
   @media print{.language-switch{display:none!important}}
+
+
+  /* Clear Bengali typography */
+  html[lang="bn"] body,
+  html[lang="bn"] button,
+  html[lang="bn"] input,
+  html[lang="bn"] textarea,
+  html[lang="bn"] select,
+  html[lang="bn"] .profile-nav a,
+  html[lang="bn"] .language-switch button{
+    font-family:'Noto Sans Bengali','Inter',sans-serif!important;
+  }
+  html[lang="bn"] h1,
+  html[lang="bn"] h2,
+  html[lang="bn"] h3,
+  html[lang="bn"] h4,
+  html[lang="bn"] .title,
+  html[lang="bn"] .name,
+  html[lang="bn"] .section-title h3,
+  html[lang="bn"] .footer-name,
+  html[lang="bn"] .professional-company-name,
+  html[lang="bn"] .family-clean-item h4{
+    font-family:'Noto Sans Bengali','Inter',sans-serif!important;
+    font-weight:700;
+  }
 
 </style>
 </head>
