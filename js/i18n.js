@@ -135,26 +135,25 @@
     }
   };
 
+  const originals = new WeakMap();
   let currentLang = localStorage.getItem("profile.language") === "bn" ? "bn" : "en";
-  let observer = null;
-  let applying = false;
 
   function toBanglaDigits(value) {
     return String(value).replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
   }
 
-  function rememberOriginalText(root = document.body) {
+  function captureOriginals(root = document.body) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
       const node = walker.currentNode;
       const parent = node.parentElement;
       if (!parent || parent.closest("script,style,svg,[data-no-i18n]")) continue;
-      if (node.__profileEnglish === undefined) node.__profileEnglish = node.nodeValue;
+      if (!originals.has(node)) originals.set(node, node.nodeValue);
     }
   }
 
-  function applyTextLanguage(root, lang) {
-    rememberOriginalText(root);
+  function translateRoot(root, lang) {
+    captureOriginals(root);
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
@@ -163,29 +162,30 @@
       const parent = node.parentElement;
       if (!parent || parent.closest("script,style,svg,[data-no-i18n]")) continue;
 
-      const englishRaw = node.__profileEnglish ?? node.nodeValue;
-      const trimmed = englishRaw.trim();
+      const original = originals.get(node) ?? node.nodeValue;
+      const trimmed = original.trim();
       if (!trimmed) continue;
 
       if (lang === "en") {
-        node.nodeValue = englishRaw;
+        node.nodeValue = original;
         continue;
       }
 
       const translated = BN[trimmed];
       if (!translated) {
-        node.nodeValue = englishRaw;
+        node.nodeValue = original;
         continue;
       }
 
-      const lead = englishRaw.match(/^\s*/)?.[0] || "";
-      const trail = englishRaw.match(/\s*$/)?.[0] || "";
+      const lead = original.match(/^\s*/)?.[0] || "";
+      const trail = original.match(/\s*$/)?.[0] || "";
       node.nodeValue = lead + translated + trail;
     }
   }
 
   function updateMeta(lang) {
     const meta = META[lang];
+    if (!meta) return;
     document.title = meta.title;
     document.querySelector('meta[name="description"]')?.setAttribute("content", meta.description);
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", meta.title);
@@ -201,36 +201,24 @@
     year.textContent = lang === "bn" ? toBanglaDigits(value) : value;
   }
 
-  function updateButtons(lang) {
-    document.querySelectorAll("#languageSwitch [data-lang]").forEach(button => {
-      const active = button.dataset.lang === lang;
-      button.classList.toggle("active", active);
-      button.setAttribute("aria-pressed", String(active));
+  function updateToggle(lang) {
+    document.querySelectorAll("#languageSwitch [data-lang]").forEach(btn => {
+      const active = btn.dataset.lang === lang;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
     });
   }
 
-  function applyLanguage(lang, persist = true) {
-    const nextLang = lang === "bn" ? "bn" : "en";
-    if (applying) return;
-    applying = true;
-
-    if (observer) observer.disconnect();
-
-    currentLang = nextLang;
+  function setLanguage(lang, persist = true) {
+    currentLang = lang === "bn" ? "bn" : "en";
     document.documentElement.lang = currentLang;
 
-    applyTextLanguage(document.body, currentLang);
+    translateRoot(document.body, currentLang);
     updateMeta(currentLang);
     updateYear(currentLang);
-    updateButtons(currentLang);
+    updateToggle(currentLang);
 
     if (persist) localStorage.setItem("profile.language", currentLang);
-
-    applying = false;
-
-    if (observer) {
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
 
     document.dispatchEvent(new CustomEvent("profilelanguagechange", {
       detail: { lang: currentLang }
@@ -238,61 +226,38 @@
   }
 
   document.addEventListener("click", event => {
-    const button = event.target.closest("#languageSwitch [data-lang]");
-    if (!button) return;
+    const btn = event.target.closest("#languageSwitch [data-lang]");
+    if (!btn) return;
     event.preventDefault();
-    event.stopPropagation();
-    applyLanguage(button.dataset.lang, true);
+    setLanguage(btn.dataset.lang, true);
   });
 
-  observer = new MutationObserver(mutations => {
-    if (applying) return;
-
-    const addedRoots = [];
+  // Any Firebase/public content inserted later is translated using the current language.
+  const observer = new MutationObserver(mutations => {
+    const added = [];
     for (const mutation of mutations) {
       mutation.addedNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
-          addedRoots.push(node);
-        }
+        if (node.nodeType === Node.ELEMENT_NODE) added.push(node);
+        if (node.nodeType === Node.TEXT_NODE && node.parentElement) added.push(node.parentElement);
       });
     }
-
-    if (!addedRoots.length) return;
-
+    if (!added.length) return;
     requestAnimationFrame(() => {
-      if (applying) return;
-      applying = true;
-      observer.disconnect();
-
-      for (const node of addedRoots) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          rememberOriginalText(node.parentElement || document.body);
-          applyTextLanguage(node.parentElement || document.body, currentLang);
-        } else {
-          rememberOriginalText(node);
-          applyTextLanguage(node, currentLang);
-        }
-      }
-
-      updateButtons(currentLang);
+      added.forEach(node => translateRoot(node, currentLang));
+      updateToggle(currentLang);
       updateYear(currentLang);
-
-      applying = false;
-      observer.observe(document.body, { childList: true, subtree: true });
     });
   });
-
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, {childList:true, subtree:true});
 
   window.profileI18n = {
     get lang() { return currentLang; },
     isBangla() { return currentLang === "bn"; },
     translate(english) { return currentLang === "bn" ? (BN[english] || english) : english; },
-    setLanguage: applyLanguage,
+    setLanguage,
     toBanglaDigits
   };
 
-  // Capture the original English DOM once, then apply the saved language.
-  rememberOriginalText(document.body);
-  applyLanguage(currentLang, false);
+  captureOriginals(document.body);
+  setLanguage(currentLang, false);
 })();
