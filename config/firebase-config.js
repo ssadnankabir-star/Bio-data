@@ -7,3 +7,4 @@ window.PROFILE_FIREBASE_CONFIG = {
   appId: "1:363364801383:web:93fcb97844b8774efcadc2",
   measurementId: "G-GBTFDFG5V8"
 };
+window.PROFILE_ADMIN_EMAIL = "ssadnankabir@gmail.com";
