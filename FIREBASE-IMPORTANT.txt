@@ -1,0 +1,3 @@
+This build hardcodes a safe fallback Firebase Web config inside js/admin.js and admin.html, so the admin panel no longer depends on config/firebase-config.js being detected before login.
+Upload/replace ALL files in the GitHub repository root.
+After GitHub Pages deploys, open admin.html in an Incognito tab once to bypass old cache.
