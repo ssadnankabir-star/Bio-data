@@ -8,3 +8,4 @@ window.PROFILE_FIREBASE_CONFIG = {
   measurementId: "G-GBTFDFG5V8"
 };
 window.PROFILE_ADMIN_EMAIL = "ssadnankabir@gmail.com";
+window.PROFILE_ADMIN_UID = "VM9V5M67iHO66p4SOFw43RgB3ml2";
