@@ -20,7 +20,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sadnan Kaabeer","image":"https://ssadnankabir-star.github.io/Bio-data/assets/profile.jpg","email":"mailto:sadnan@hugeicons.com","url":"https://ssadnankabir-star.github.io/Bio-data/index.html","sameAs":["https://www.facebook.com/sadnan.snigdho","https://www.linkedin.com/in/sadnan-snigdho","https://github.com/ssadnankabir-star","https://instagram.com/sad.snig"]}</script>
 <title>Sadnan Kaabeer — Personal Profile</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
   :root{
     --emerald:#0F3D2E;
@@ -807,6 +807,48 @@
   }
   @media print{.header-admin-link{display:none!important}}
 
+
+  /* Bengali / English language switch */
+  .language-switch{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    margin-left:3px;
+    padding:3px 6px;
+    border-left:1px solid rgba(184,134,11,.20);
+    white-space:nowrap;
+  }
+  .language-switch button{
+    border:0;
+    background:transparent;
+    padding:4px 5px;
+    border-radius:999px;
+    cursor:pointer;
+    font:700 10px 'Inter','Hind Siliguri',sans-serif;
+    color:var(--ink-soft);
+    transition:.18s ease;
+  }
+  .language-switch button.active{
+    background:var(--emerald);
+    color:#fff;
+  }
+  .language-switch span{font-size:9px;color:#B9AE96}
+  html[lang="bn"] body{font-family:'Hind Siliguri','Inter',sans-serif}
+  html[lang="bn"] h1.title,
+  html[lang="bn"] h2.name,
+  html[lang="bn"] .section-title h3,
+  html[lang="bn"] .footer .footer-name,
+  html[lang="bn"] .professional-company-name,
+  html[lang="bn"] .halallab-title,
+  html[lang="bn"] .family-clean-item h4{
+    font-family:'Noto Serif Bengali','Hind Siliguri',serif;
+  }
+  html[lang="bn"] .profile-nav a{font-family:'Hind Siliguri','Inter',sans-serif}
+  @media(max-width:600px){
+    .language-switch{flex:0 0 auto;margin-left:2px}
+  }
+  @media print{.language-switch{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -830,6 +872,11 @@
         <a href="#interests">Interests</a>
         <a href="#gallery">Gallery</a>
         <a href="#contact">Contact</a>
+        <div class="language-switch" id="languageSwitch" aria-label="Language">
+          <button type="button" data-lang="bn">বাং</button>
+          <span aria-hidden="true">/</span>
+          <button type="button" data-lang="en" class="active">EN</button>
+        </div>
       </nav>
 
       <header class="header section" id="home">
@@ -838,10 +885,6 @@
         </a>
 
         <p class="eyebrow">Personal Profile</p>
-        <div class="star-divider"><div class="line l"></div><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg><div class="line r"></div></div>
-        <h1 class="title editable">Sadnan Kaabeer</h1>
-        <p class="subtitle editable">Personal Profile</p>
-        <p class="hero-line editable">Design, technology, creativity, and continuous learning.</p>
         <div class="flourish"><div class="line"></div><span class="mark">❦</span><div class="line"></div></div>
         <div class="photo-ring"><a href="https://m.facebook.com/photo.php?fbid=4461239434113529" target="_blank" rel="noopener noreferrer" aria-label="Open Sadnan Kaabeer profile photo on Facebook" style="display:block;width:100%;height:100%;border-radius:50%"><img src="assets/profile.jpg" alt="Sadnan Kaabeer" loading="eager"></a></div>
         <h2 class="name editable">Sadnan Kaabeer</h2>
@@ -886,15 +929,15 @@
           <div class="education-grid" id="eduList">
             <div class="education-item">
               <strong class="editable">SSC</strong>
-              <span class="editable">Jamalganj Model High School · 2015</span>
+              <span class="editable">Jamalganj Govt Model High School · 2015</span>
             </div>
             <div class="education-item">
               <strong class="editable">HSC</strong>
-              <span class="editable">Jamalgonj College · 2017</span>
+              <span class="editable">Jamalgonj Govt College · 2017</span>
             </div>
             <div class="education-item">
               <strong class="editable">Honours</strong>
-              <span class="editable">Dakshmin Surma College, Sylhet.</span>
+              <span class="editable">Dakshmin Surma Govt College, Sylhet.</span>
               <span><strong style="display:inline;font-size:12px" class="editable">Subject / Department</strong> <span class="editable">English Literature</span></span>
               <span><strong style="display:inline;font-size:12px" class="editable">Graduation Year</strong> <span class="editable">2021</span></span>
             </div>
@@ -1182,6 +1225,7 @@ document.getElementById("copyBtn")?.addEventListener("click",async()=>{try{await
 
 loadPublished();
 </script>
+<script src="js/i18n.js"></script>
 <script src="js/live-export.js"></script>
 </body>
 </html>
