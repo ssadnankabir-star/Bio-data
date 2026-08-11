@@ -999,10 +999,96 @@
     font-weight:400!important;
   }
 
+
+  /* Hover font settings */
+  .font-settings{position:relative;display:inline-flex;align-items:center;margin-left:auto}
+  .font-settings-trigger{
+    width:34px;height:34px;border:1px solid rgba(184,134,11,.22);border-radius:10px;
+    background:rgba(255,255,255,.72);color:var(--emerald);cursor:pointer;
+    display:grid;place-items:center;transition:.2s ease;
+  }
+  .font-settings-trigger:hover,.font-settings:hover .font-settings-trigger{
+    border-color:rgba(184,134,11,.55);background:#fff;transform:translateY(-1px);
+    box-shadow:0 7px 18px rgba(15,61,46,.10)
+  }
+  .font-settings-icon{font:700 13px Inter,sans-serif;letter-spacing:-.04em}
+  .font-settings-menu{
+    position:absolute;right:0;top:calc(100% + 8px);width:270px;padding:14px;
+    border:1px solid #e7dfcf;border-radius:14px;background:rgba(255,255,255,.98);
+    box-shadow:0 18px 45px rgba(15,61,46,.16);z-index:2000;
+    opacity:0;visibility:hidden;transform:translateY(-5px);pointer-events:none;
+    transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+  }
+  .font-settings:hover .font-settings-menu,
+  .font-settings:focus-within .font-settings-menu,
+  .font-settings.open .font-settings-menu{
+    opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto;
+  }
+  .font-settings-title{font:700 13px 'Hind Siliguri',sans-serif;color:#0f3d2e;margin-bottom:10px}
+  .font-settings-label{font:600 10px Inter,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#8a8172;margin:8px 0 6px}
+  .font-settings-label.body-label{margin-top:13px}
+  .font-option-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .font-option-list button{
+    border:1px solid #eee6d7;background:#fbf9f3;color:#302c25;border-radius:8px;
+    padding:8px 7px;font-size:15px;line-height:1.25;cursor:pointer;text-align:left;
+    transition:.15s ease;
+  }
+  .font-option-list button:hover{background:#f4efe2;border-color:#d8c79f;color:#0f3d2e}
+  .font-option-list button.active{background:#0f3d2e;color:#fff;border-color:#0f3d2e}
+  .font-reset{
+    width:100%;margin-top:11px;padding:8px;border:0;border-top:1px solid #eee6d7;
+    background:transparent;color:#8b6a12;font:600 11px Inter,sans-serif;cursor:pointer
+  }
+  @media(max-width:700px){
+    .font-settings-menu{position:fixed;right:12px;top:64px;width:min(300px,calc(100vw - 24px))}
+  }
+  @media print{.font-settings{display:none!important}}
+
+  html[lang="bn"] h1,
+  html[lang="bn"] h2,
+  html[lang="bn"] h3,
+  html[lang="bn"] h4,
+  html[lang="bn"] .title,
+  html[lang="bn"] .name,
+  html[lang="bn"] .section-title h3,
+  html[lang="bn"] .footer-name,
+  html[lang="bn"] .professional-company-name,
+  html[lang="bn"] .halallab-title,
+  html[lang="bn"] .family-clean-item h4{
+    font-family:var(--bn-title-font,'Kalpurush'),serif!important;
+  }
+  html[lang="bn"] body,
+  html[lang="bn"] button,
+  html[lang="bn"] input,
+  html[lang="bn"] textarea,
+  html[lang="bn"] select,
+  html[lang="bn"] .profile-nav a,
+  html[lang="bn"] .label,
+  html[lang="bn"] .value,
+  html[lang="bn"] .body-text,
+  html[lang="bn"] .kv-row,
+  html[lang="bn"] .education-item span,
+  html[lang="bn"] .family-clean-role,
+  html[lang="bn"] .family-clean-meta,
+  html[lang="bn"] .family-clean-item p,
+  html[lang="bn"] .skill-chip,
+  html[lang="bn"] .interest-chip,
+  html[lang="bn"] .social-card,
+  html[lang="bn"] .contact-card{
+    font-family:var(--bn-body-font,'Tiro Bangla'),sans-serif!important;
+  }
+
 </style>
 <link href="https://fonts.maateen.me/nikosh/font.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap" rel="stylesheet">
 <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+
+<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/nikosh/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/siyam-rupali/font.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;500;600&family=Tiro+Bangla&display=swap" rel="stylesheet">
+
 </head>
 <body>
 <div class="wrap">
@@ -1025,7 +1111,32 @@
         <a href="#interests">Interests</a>
         <a href="#gallery">Gallery</a>
         <a href="#contact">Contact</a>
-        <div class="language-switch" id="languageSwitch" aria-label="Language">
+        <div class="font-settings" id="fontSettings">
+        <button type="button" class="font-settings-trigger" aria-label="Font settings" title="Font settings">
+          <span class="font-settings-icon">Aa</span>
+        </button>
+        <div class="font-settings-menu">
+          <div class="font-settings-title">বাংলা ফন্ট</div>
+          <div class="font-settings-label">Title / Heading</div>
+          <div class="font-option-list" data-font-target="title">
+            <button type="button" data-font="Kalpurush" style="font-family:'Kalpurush'">কালপুরুষ</button>
+            <button type="button" data-font="Nikosh" style="font-family:'Nikosh'">নিকষ</button>
+            <button type="button" data-font="Noto Serif Bengali" style="font-family:'Noto Serif Bengali'">নটো সেরিফ</button>
+            <button type="button" data-font="Tiro Bangla" style="font-family:'Tiro Bangla'">তিরো বাংলা</button>
+          </div>
+          <div class="font-settings-label body-label">Body / Small Text</div>
+          <div class="font-option-list" data-font-target="body">
+            <button type="button" data-font="Tiro Bangla" style="font-family:'Tiro Bangla'">তিরো বাংলা</button>
+            <button type="button" data-font="Hind Siliguri" style="font-family:'Hind Siliguri'">হিন্দ শিলিগুড়ি</button>
+            <button type="button" data-font="SolaimanLipi" style="font-family:'SolaimanLipi'">সোলায়মানলিপি</button>
+            <button type="button" data-font="Siyam Rupali" style="font-family:'Siyam Rupali'">সিয়াম রূপালি</button>
+            <button type="button" data-font="Noto Sans Bengali" style="font-family:'Noto Sans Bengali'">নটো স্যান্স</button>
+            <button type="button" data-font="Anek Bangla" style="font-family:'Anek Bangla'">অনেক বাংলা</button>
+          </div>
+          <button type="button" class="font-reset" id="fontReset">Default: Kalpurush + Tiro Bangla</button>
+        </div>
+      </div>
+      <div class="language-switch" id="languageSwitch" aria-label="Language">
           <button type="button" data-lang="bn">বাং</button>
           <span aria-hidden="true">/</span>
           <button type="button" data-lang="en" class="active">EN</button>
@@ -1380,5 +1491,57 @@ loadPublished();
 </script>
 <script src="js/i18n.js"></script>
 <script src="js/live-export.js"></script>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const panel = document.getElementById('fontSettings');
+  const trigger = panel?.querySelector('.font-settings-trigger');
+  const titleList = panel?.querySelector('[data-font-target="title"]');
+  const bodyList = panel?.querySelector('[data-font-target="body"]');
+
+  const titleFont = localStorage.getItem('profile.bnTitleFont') || 'Kalpurush';
+  const bodyFont = localStorage.getItem('profile.bnBodyFont') || 'Tiro Bangla';
+
+  function applyFont(target, font, persist = true){
+    if(target === 'title'){
+      root.style.setProperty('--bn-title-font', `"${font}"`);
+      if(persist) localStorage.setItem('profile.bnTitleFont', font);
+    } else {
+      root.style.setProperty('--bn-body-font', `"${font}"`);
+      if(persist) localStorage.setItem('profile.bnBodyFont', font);
+    }
+    panel?.querySelectorAll(`[data-font-target="${target}"] button`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.font === font);
+    });
+  }
+
+  applyFont('title', titleFont, false);
+  applyFont('body', bodyFont, false);
+
+  panel?.addEventListener('click', e => {
+    const btn = e.target.closest('[data-font]');
+    if(btn){
+      const list = btn.closest('[data-font-target]');
+      applyFont(list.dataset.fontTarget, btn.dataset.font, true);
+      return;
+    }
+    if(e.target.closest('#fontReset')){
+      applyFont('title','Kalpurush',true);
+      applyFont('body','Tiro Bangla',true);
+    }
+  });
+
+  trigger?.addEventListener('click', e => {
+    e.preventDefault();
+    panel.classList.toggle('open');
+  });
+
+  document.addEventListener('click', e => {
+    if(panel && !panel.contains(e.target)) panel.classList.remove('open');
+  });
+})();
+</script>
+
 </body>
 </html>
