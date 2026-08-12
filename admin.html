@@ -12,9 +12,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sadnan Profile">
-<link rel="apple-touch-icon" href="assets/profile.jpg">
-
-
 <style>
 :root{--admin-green:#0F3D2E;--admin-gold:#B8860B;--admin-bg:#F7F4EC;--admin-card:#fff;--admin-line:#E8E1D2;--admin-muted:#6A6358}
 body{background:linear-gradient(180deg,#FBF9F4,#F5F1E8)!important;color:#241F1A!important}
@@ -30,6 +27,17 @@ button,.btn,a.btn{border-radius:10px!important;transition:.16s ease}button:hover
 .admin-tip{max-width:1180px;margin:12px auto 28px;padding:12px 14px;border:1px solid var(--admin-line);border-radius:13px;background:#FCFAF5;color:var(--admin-muted);font-size:11px;line-height:1.65}
 @media(max-width:700px){.admin-topbar{margin:7px 7px 14px;align-items:flex-start;flex-direction:column}.admin-brand p{display:none}}
 </style>
+
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F3D2E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sadnan Profile">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
 </head>
 <body>
@@ -117,5 +125,10 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
 </script>
 
 <div class="admin-tip"><strong>Tip:</strong> Edit your content, review the live profile, then use Save / Publish. Only your Firebase-authenticated admin account can publish.</div>
+
+<div id="pwaInstallHint" style="display:none;position:fixed;right:14px;bottom:62px;z-index:4999;max-width:290px;background:#fff;border:1px solid #e7dfcf;border-radius:14px;padding:12px 14px;box-shadow:0 14px 36px rgba(15,61,46,.14);font:12px/1.55 Inter,sans-serif;color:#4f4a42">
+  Install করলে এটি আলাদা app হিসেবে খুলবে এবং home screen/app drawer-এ আপনার profile picture icon দেখাবে।
+</div>
+
 </body>
 </html>

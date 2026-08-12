@@ -1089,6 +1089,17 @@
 <link href="https://fonts.maateen.me/siyam-rupali/font.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;500;600&family=Tiro+Bangla&display=swap" rel="stylesheet">
 
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F3D2E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sadnan Profile">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
 </head>
 <body>
 <div class="wrap">
@@ -1559,6 +1570,11 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredIns
 installBtn?.addEventListener('click',async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBtn.style.display='none';});
 window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.display='none';});
 </script>
+
+
+<div id="pwaInstallHint" style="display:none;position:fixed;right:14px;bottom:62px;z-index:4999;max-width:290px;background:#fff;border:1px solid #e7dfcf;border-radius:14px;padding:12px 14px;box-shadow:0 14px 36px rgba(15,61,46,.14);font:12px/1.55 Inter,sans-serif;color:#4f4a42">
+  Install করলে এটি আলাদা app হিসেবে খুলবে এবং home screen/app drawer-এ আপনার profile picture icon দেখাবে।
+</div>
 
 </body>
 </html>

@@ -1,0 +1,18 @@
+Chrome install behavior
+
+This build is prepared as an installable PWA/WebAPK:
+- real PNG 192x192 icon
+- real PNG 512x512 icon
+- maskable 512x512 icon
+- standalone display mode
+- manifest id/start_url/scope
+- service worker
+- HTTPS required (GitHub Pages provides HTTPS)
+
+On Android Chrome:
+1. Open the live GitHub Pages site.
+2. Wait a few seconds and refresh once after the first deploy.
+3. Chrome menu should show "Install app" when installability checks pass.
+4. Installing from Chrome may create a WebAPK, which appears in the app drawer like a normal app and uses the profile photo as the icon.
+
+If Chrome only shows "Add to Home screen", remove the old shortcut/PWA first, clear the site's storage/cache, reopen the site, and try again after the new manifest/service worker has loaded.
