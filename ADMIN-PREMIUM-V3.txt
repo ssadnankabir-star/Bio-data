@@ -1,0 +1,2 @@
+Admin UI completely redesigned while preserving the existing functional IDs and Firebase logic.
+New flow includes premium login screen, sticky top bar, live editor card, cleaner toolbar, font settings side panel, and responsive mobile layout.
