@@ -1078,6 +1078,118 @@
     font-family:var(--bn-body-font,'Tiro Bangla'),sans-serif!important;
   }
 
+
+  /* Refined public navigation */
+  .profile-nav{
+    position:fixed!important;
+    top:10px!important;
+    left:50%!important;
+    transform:translateX(-50%)!important;
+    z-index:2147483000!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:2px!important;
+    width:max-content!important;
+    max-width:calc(100vw - 20px)!important;
+    padding:6px!important;
+    margin:0!important;
+    border:1px solid rgba(184,134,11,.20)!important;
+    border-radius:16px!important;
+    background:rgba(255,253,248,.94)!important;
+    box-shadow:0 14px 34px rgba(15,61,46,.12)!important;
+    backdrop-filter:blur(16px)!important;
+    -webkit-backdrop-filter:blur(16px)!important;
+  }
+  .profile-nav a{
+    padding:7px 9px!important;
+    border-radius:10px!important;
+    font-size:10.5px!important;
+    line-height:1!important;
+    color:var(--emerald-deep)!important;
+    text-decoration:none!important;
+    white-space:nowrap!important;
+    transition:background .18s ease,color .18s ease,transform .18s ease!important;
+  }
+  .profile-nav a:hover{
+    background:#F2EEE4!important;
+    color:var(--emerald)!important;
+    transform:translateY(-1px);
+  }
+  .language-switch{
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:3px!important;
+    margin-left:4px!important;
+    padding-left:6px!important;
+    border-left:1px solid #E7DECA!important;
+  }
+  .language-switch button{
+    min-width:31px;
+    padding:6px 7px!important;
+    border-radius:9px!important;
+    font-size:10px!important;
+  }
+  .header{padding-top:64px!important}
+
+  @media(max-width:720px){
+    .profile-nav{
+      top:6px!important;
+      left:6px!important;
+      right:6px!important;
+      transform:none!important;
+      width:auto!important;
+      max-width:none!important;
+      justify-content:flex-start!important;
+      overflow-x:auto!important;
+      overflow-y:hidden!important;
+      scrollbar-width:none!important;
+      -webkit-overflow-scrolling:touch;
+    }
+    .profile-nav::-webkit-scrollbar{display:none!important}
+    .profile-nav a{flex:0 0 auto!important}
+    .language-switch{flex:0 0 auto!important}
+    .header{padding-top:60px!important}
+  }
+
+
+  :root{
+    --bn-title-font:'Tiro Bangla';
+    --bn-body-font:'Noto Sans Bengali';
+  }
+  html[lang="bn"] h1,
+  html[lang="bn"] h2,
+  html[lang="bn"] h3,
+  html[lang="bn"] h4,
+  html[lang="bn"] .title,
+  html[lang="bn"] .name,
+  html[lang="bn"] .section-title h3,
+  html[lang="bn"] .footer-name,
+  html[lang="bn"] .professional-company-name,
+  html[lang="bn"] .halallab-title,
+  html[lang="bn"] .family-clean-item h4{
+    font-family:var(--bn-title-font),serif!important;
+  }
+  html[lang="bn"] body,
+  html[lang="bn"] button,
+  html[lang="bn"] input,
+  html[lang="bn"] textarea,
+  html[lang="bn"] select,
+  html[lang="bn"] .profile-nav a,
+  html[lang="bn"] .label,
+  html[lang="bn"] .value,
+  html[lang="bn"] .body-text,
+  html[lang="bn"] .kv-row,
+  html[lang="bn"] .education-item span,
+  html[lang="bn"] .family-clean-role,
+  html[lang="bn"] .family-clean-meta,
+  html[lang="bn"] .family-clean-item p,
+  html[lang="bn"] .skill-chip,
+  html[lang="bn"] .interest-chip,
+  html[lang="bn"] .social-card,
+  html[lang="bn"] .contact-card{
+    font-family:var(--bn-body-font),sans-serif!important;
+  }
+
 </style>
 <link href="https://fonts.maateen.me/nikosh/font.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap" rel="stylesheet">
@@ -1248,6 +1360,7 @@
 
 </head>
 <body>
+<div id="publishedFontConfig" data-title-font="Tiro Bangla" data-body-font="Noto Sans Bengali" hidden></div>
 
 <div id="appSplash" aria-hidden="true">
   <div class="app-splash-inner">
@@ -1279,33 +1392,7 @@
         <a href="#family">Family</a>
         <a href="#interests">Interests</a>
         <a href="#gallery">Gallery</a>
-        <a href="#contact">Contact</a>
-        <div class="font-settings" id="fontSettings">
-        <button type="button" class="font-settings-trigger" aria-label="Font settings" title="Font settings">
-          <span class="font-settings-icon">Aa</span>
-        </button>
-        <div class="font-settings-menu">
-          <div class="font-settings-title">বাংলা ফন্ট</div>
-          <div class="font-settings-label">Title / Heading</div>
-          <div class="font-option-list" data-font-target="title">
-            <button type="button" data-font="Kalpurush" style="font-family:'Kalpurush'">কালপুরুষ</button>
-            <button type="button" data-font="Nikosh" style="font-family:'Nikosh'">নিকষ</button>
-            <button type="button" data-font="Noto Serif Bengali" style="font-family:'Noto Serif Bengali'">নটো সেরিফ</button>
-            <button type="button" data-font="Tiro Bangla" style="font-family:'Tiro Bangla'">তিরো বাংলা</button>
-          </div>
-          <div class="font-settings-label body-label">Body / Small Text</div>
-          <div class="font-option-list" data-font-target="body">
-            <button type="button" data-font="Tiro Bangla" style="font-family:'Tiro Bangla'">তিরো বাংলা</button>
-            <button type="button" data-font="Hind Siliguri" style="font-family:'Hind Siliguri'">হিন্দ শিলিগুড়ি</button>
-            <button type="button" data-font="SolaimanLipi" style="font-family:'SolaimanLipi'">সোলায়মানলিপি</button>
-            <button type="button" data-font="Siyam Rupali" style="font-family:'Siyam Rupali'">সিয়াম রূপালি</button>
-            <button type="button" data-font="Noto Sans Bengali" style="font-family:'Noto Sans Bengali'">নটো স্যান্স</button>
-            <button type="button" data-font="Anek Bangla" style="font-family:'Anek Bangla'">অনেক বাংলা</button>
-          </div>
-          <button type="button" class="font-reset" id="fontReset">Default: Kalpurush + Tiro Bangla</button>
-        </div>
-      </div>
-      <div class="language-switch" id="languageSwitch" aria-label="Language">
+        <a href="#contact">Contact</a><div class="language-switch" id="languageSwitch" aria-label="Language">
           <button type="button" data-lang="bn">বাং</button>
           <span aria-hidden="true">/</span>
           <button type="button" data-lang="en" class="active">EN</button>
@@ -1322,12 +1409,6 @@
         <div class="photo-ring"><a href="https://m.facebook.com/photo.php?fbid=4461239434113529" target="_blank" rel="noopener noreferrer" aria-label="Open Sadnan Kaabeer profile photo on Facebook" style="display:block;width:100%;height:100%;border-radius:50%"><img src="assets/profile.jpg" alt="Sadnan Kaabeer" loading="eager"></a></div>
         <h2 class="name editable">Sadnan Kaabeer</h2>
         <p class="location editable"> Natunpara, Jamalganj, Sunamganj · Bangladesh</p>
-        <div class="quick-links">
-          <a href="mailto:sadnan@hugeicons.com">Email</a>
-          <a href="https://www.linkedin.com/in/sadnan-snigdho" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://github.com/ssadnankabir-star" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://www.facebook.com/sadnan.snigdho" target="_blank" rel="noopener">Facebook</a>
-        </div>
       </header>
 
       <section class="block mt10 section" id="personal">
@@ -1661,56 +1742,7 @@ loadPublished();
 <script src="js/i18n.js"></script>
 <script src="js/live-export.js"></script>
 
-<script>
-(() => {
-  const root = document.documentElement;
-  const panel = document.getElementById('fontSettings');
-  const trigger = panel?.querySelector('.font-settings-trigger');
-  const titleList = panel?.querySelector('[data-font-target="title"]');
-  const bodyList = panel?.querySelector('[data-font-target="body"]');
 
-  const titleFont = localStorage.getItem('profile.bnTitleFont') || 'Kalpurush';
-  const bodyFont = localStorage.getItem('profile.bnBodyFont') || 'Tiro Bangla';
-
-  function applyFont(target, font, persist = true){
-    if(target === 'title'){
-      root.style.setProperty('--bn-title-font', `"${font}"`);
-      if(persist) localStorage.setItem('profile.bnTitleFont', font);
-    } else {
-      root.style.setProperty('--bn-body-font', `"${font}"`);
-      if(persist) localStorage.setItem('profile.bnBodyFont', font);
-    }
-    panel?.querySelectorAll(`[data-font-target="${target}"] button`).forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.font === font);
-    });
-  }
-
-  applyFont('title', titleFont, false);
-  applyFont('body', bodyFont, false);
-
-  panel?.addEventListener('click', e => {
-    const btn = e.target.closest('[data-font]');
-    if(btn){
-      const list = btn.closest('[data-font-target]');
-      applyFont(list.dataset.fontTarget, btn.dataset.font, true);
-      return;
-    }
-    if(e.target.closest('#fontReset')){
-      applyFont('title','Kalpurush',true);
-      applyFont('body','Tiro Bangla',true);
-    }
-  });
-
-  trigger?.addEventListener('click', e => {
-    e.preventDefault();
-    panel.classList.toggle('open');
-  });
-
-  document.addEventListener('click', e => {
-    if(panel && !panel.contains(e.target)) panel.classList.remove('open');
-  });
-})();
-</script>
 
 
 <script>
@@ -1766,6 +1798,23 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('appinstalled', () => {
     if (installSection) installSection.style.display = 'none';
   });
+})();
+</script>
+
+
+<script>
+(() => {
+  const defaults = { title: "Tiro Bangla", body: "Noto Sans Bengali" };
+  function applyFonts() {
+    const cfg = document.getElementById("publishedFontConfig");
+    const title = cfg?.dataset?.titleFont || defaults.title;
+    const body = cfg?.dataset?.bodyFont || defaults.body;
+    document.documentElement.style.setProperty("--bn-title-font", `"${title}"`);
+    document.documentElement.style.setProperty("--bn-body-font", `"${body}"`);
+  }
+  applyFonts();
+  const observer = new MutationObserver(applyFonts);
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 

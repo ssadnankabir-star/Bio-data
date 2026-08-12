@@ -39,11 +39,95 @@ button,.btn,a.btn{border-radius:10px!important;transition:.16s ease}button:hover
 <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
+
+<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/nikosh/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/siyam-rupali/font.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600&family=Tiro+Bangla&display=swap" rel="stylesheet">
+
+
+<style>
+  .admin-font-card{
+    max-width:1180px;
+    margin:0 auto 14px;
+    padding:0 10px;
+  }
+  .admin-font-inner{
+    padding:15px;
+    border:1px solid #E8E1D2;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 10px 28px rgba(15,61,46,.05);
+  }
+  .admin-font-title{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  }
+  .admin-font-title h3{
+    margin:0;color:#0F3D2E;font-size:14px;
+  }
+  .admin-font-title span{font-size:10px;color:#6A6358}
+  .admin-font-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  }
+  .admin-font-field label{
+    display:block;margin-bottom:6px;font-size:10px;font-weight:700;color:#6A6358;text-transform:uppercase;letter-spacing:.06em;
+  }
+  .admin-font-field select{
+    width:100%;
+  }
+  .admin-font-preview{
+    margin-top:12px;padding:12px;border:1px solid #EEE7D8;border-radius:11px;background:#FBF9F3;
+  }
+  #adminFontPreviewTitle{
+    margin:0 0 5px;color:#0F3D2E;font-size:22px;font-weight:400;
+  }
+  #adminFontPreviewBody{
+    margin:0;color:#4F4A42;font-size:15px;line-height:1.7;
+  }
+  @media(max-width:650px){.admin-font-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <div class="admin-topbar">
   <div class="admin-brand"><div class="admin-logo">SK</div><div><h2>Profile Admin</h2><p>Manage, preview, and publish your profile content.</p></div></div>
   <div class="admin-actions"><span class="admin-badge">Firebase Connected</span><a href="index.html" target="_blank" rel="noopener">View Profile</a></div>
+</div>
+
+<div class="admin-font-card">
+  <div class="admin-font-inner">
+    <div class="admin-font-title">
+      <h3>বাংলা ফন্ট</h3>
+      <span>Published font choice will be shown to everyone</span>
+    </div>
+    <div class="admin-font-grid">
+      <div class="admin-font-field">
+        <label for="bnTitleFontSelect">Title / Heading</label>
+        <select id="bnTitleFontSelect">
+          <option value="Tiro Bangla" selected>তিরো বাংলা</option>
+          <option value="Kalpurush">কালপুরুষ</option>
+          <option value="Nikosh">নিকষ</option>
+          <option value="Noto Serif Bengali">নটো সেরিফ বাংলা</option>
+        </select>
+      </div>
+      <div class="admin-font-field">
+        <label for="bnBodyFontSelect">Body / Small Text</label>
+        <select id="bnBodyFontSelect">
+          <option value="Noto Sans Bengali" selected>নটো স্যান্স বাংলা</option>
+          <option value="Hind Siliguri">হিন্দ শিলিগুড়ি</option>
+          <option value="SolaimanLipi">সোলায়মানলিপি</option>
+          <option value="Siyam Rupali">সিয়াম রূপালি</option>
+          <option value="Anek Bangla">অনেক বাংলা</option>
+          <option value="Tiro Bangla">তিরো বাংলা</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-font-preview">
+      <h4 id="adminFontPreviewTitle">সাদনান কাবীর (স্নিগ্ধ)</h4>
+      <p id="adminFontPreviewBody">জন্মতারিখ: ২১ এপ্রিল ১৯৯৯ · ওজন: ৯৫ কেজি · শিক্ষাজীবন ও পেশাগত তথ্য</p>
+    </div>
+  </div>
 </div>
 
 <header class="top">
@@ -129,6 +213,48 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
 <div id="pwaInstallHint" style="display:none;position:fixed;right:14px;bottom:62px;z-index:4999;max-width:290px;background:#fff;border:1px solid #e7dfcf;border-radius:14px;padding:12px 14px;box-shadow:0 14px 36px rgba(15,61,46,.14);font:12px/1.55 Inter,sans-serif;color:#4f4a42">
   Install করলে এটি আলাদা app হিসেবে খুলবে এবং home screen/app drawer-এ আপনার profile picture icon দেখাবে।
 </div>
+
+
+<script>
+(() => {
+  const titleSelect = document.getElementById("bnTitleFontSelect");
+  const bodySelect = document.getElementById("bnBodyFontSelect");
+  const titlePreview = document.getElementById("adminFontPreviewTitle");
+  const bodyPreview = document.getElementById("adminFontPreviewBody");
+
+  const defaults = { title:"Tiro Bangla", body:"Noto Sans Bengali" };
+
+  function updatePreview(){
+    const title = titleSelect?.value || defaults.title;
+    const body = bodySelect?.value || defaults.body;
+    if(titlePreview) titlePreview.style.fontFamily = `"${title}"`;
+    if(bodyPreview) bodyPreview.style.fontFamily = `"${body}"`;
+  }
+
+  function markFontChange(){
+    updatePreview();
+    if (window.state && typeof window.state.html === "string") {
+      // Admin JS will embed these selections during Save / Publish.
+    }
+    const status = document.getElementById("status");
+    if (status) status.textContent = "Unsynced font changes";
+  }
+
+  titleSelect?.addEventListener("change", markFontChange);
+  bodySelect?.addEventListener("change", markFontChange);
+  updatePreview();
+
+  window.adminFontSettings = {
+    get title(){ return titleSelect?.value || defaults.title; },
+    get body(){ return bodySelect?.value || defaults.body; },
+    load(title, body){
+      if(titleSelect) titleSelect.value = title || defaults.title;
+      if(bodySelect) bodySelect.value = body || defaults.body;
+      updatePreview();
+    }
+  };
+})();
+</script>
 
 </body>
 </html>

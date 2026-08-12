@@ -1,0 +1,10 @@
+Public changes:
+- Removed duplicate Email/LinkedIn/GitHub/Facebook links under the profile location.
+- Redesigned the sticky navbar and kept only the public Bangla/EN language switch.
+- Removed the public Aa font changer.
+
+Admin changes:
+- Added Bangla font settings only in Admin.
+- Default Title/Heading: Tiro Bangla.
+- Default Body/Small Text: Noto Sans Bengali.
+- Font selection is embedded into the published HTML so visitors see the admin-published choice.
