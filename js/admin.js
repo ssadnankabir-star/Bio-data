@@ -121,12 +121,61 @@ function snapshot() {
   state.future = [];
 }
 
+function buildAdminPreviewHtml(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(String(html || ""), "text/html");
+
+  // Never run public scripts inside the editor.
+  doc.querySelectorAll("script").forEach(node => node.remove());
+
+  // Remove all public-only app UI before the preview is painted.
+  doc.querySelectorAll(
+    "#appSplash,#installAppSection,#installAppBtn,#pwaInstallHint,#portfolioTools"
+  ).forEach(node => node.remove());
+
+  // Remove splash-specific style blocks as well, so no overlay can survive.
+  [...doc.querySelectorAll("style")].forEach(style => {
+    const text = style.textContent || "";
+    if (
+      text.includes("App opening splash") ||
+      text.includes("#appSplash") ||
+      text.includes(".app-splash-")
+    ) {
+      style.remove();
+    }
+  });
+
+  // Make all relative assets resolve against the real public site.
+  if (!doc.querySelector("base")) {
+    const base = doc.createElement("base");
+    base.href = new URL("./", window.location.href).href;
+    doc.head.prepend(base);
+  }
+
+  const guard = doc.createElement("style");
+  guard.setAttribute("data-admin-preview-guard", "true");
+  guard.textContent = `
+    html,body{min-height:100%!important;overflow:auto!important}
+    body{opacity:1!important;visibility:visible!important}
+    .wrap,.frame-outer,.frame-inner{opacity:1!important;visibility:visible!important}
+    #appSplash,#installAppSection,#installAppBtn,#pwaInstallHint{display:none!important}
+  `;
+  doc.head.appendChild(guard);
+
+  return "<!doctype html>\n" + doc.documentElement.outerHTML;
+}
+
 function render(html, remember = true) {
   if (remember && state.ready) snapshot();
+
+  // Keep the real document as state, but give the iframe an admin-only version
+  // with splash/install UI removed BEFORE the iframe starts rendering.
   const safeHtml = stripUnsafeMarkup(html);
   state.html = safeHtml;
   localStorage.setItem(localKey, safeHtml);
-  $("preview").srcdoc = safeHtml;
+
+  const previewHtml = buildAdminPreviewHtml(safeHtml);
+  $("preview").srcdoc = previewHtml;
 }
 
 
@@ -192,7 +241,7 @@ async function loadContent() {
     const d = $("preview").contentDocument;
     const bodyText = d?.body?.textContent?.trim() || "";
     if (bodyText.length < 100 && isUsableProfileHtml(state.html)) {
-      $("preview").srcdoc = state.html;
+      $("preview").srcdoc = buildAdminPreviewHtml(state.html);
     }
   }, 250);
 }
