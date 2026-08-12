@@ -222,6 +222,9 @@ function handleEditableInput() {
 function enableEditor() {
   const d = $("preview").contentDocument;
   if (!d) return;
+  // Public-only UI should never appear inside the admin editor preview.
+  d.querySelectorAll("#appSplash,#installAppSection,#installAppBtn,#pwaInstallHint").forEach((node) => node.remove());
+
   d.body.classList.add("cms-editing");
   d.querySelectorAll(".editable").forEach((el) => {
     el.setAttribute("contenteditable", "true");
@@ -251,6 +254,20 @@ function enableEditor() {
     .editable{cursor:text!important}
     body.cms-editing [data-profile-hidden="true"]{display:block!important;opacity:.35!important;filter:saturate(.5)!important}
     body.cms-editing [data-profile-hidden="true"]::before{content:"Hidden";position:absolute;background:#0F3D2E;color:#fff;font:600 10px sans-serif;padding:4px 7px;border-radius:999px;z-index:30}
+
+    /* Admin preview: never let public app chrome block editing */
+    #appSplash,
+    #installAppSection,
+    #installAppBtn,
+    #pwaInstallHint{
+      display:none!important;
+      visibility:hidden!important;
+      opacity:0!important;
+      pointer-events:none!important;
+    }
+
+    /* Keep the real profile visible immediately in the editor */
+    body{overflow:auto!important}
   `;
   d.head.appendChild(style);
 }
