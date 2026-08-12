@@ -114,23 +114,68 @@ function render(html, remember = true) {
   $("preview").srcdoc = safeHtml;
 }
 
+
+function isUsableProfileHtml(html) {
+  if (!html || typeof html !== "string") return false;
+  if (html.length < 3000) return false;
+  return /id=["']home["']/.test(html)
+    && /id=["']personal["']/.test(html)
+    && /<body[\s>]/i.test(html);
+}
+
 async function loadContent() {
-  let html = localStorage.getItem(localKey);
-  if (!html) {
-    const response = await fetch("index.html", { cache: "no-store" });
-    html = await response.text();
+  let baseHtml = "";
+  let localHtml = localStorage.getItem(localKey) || "";
+  let cloudHtml = "";
+
+  try {
+    const response = await fetch("index.html?v=" + Date.now(), { cache: "no-store" });
+    baseHtml = await response.text();
+  } catch (error) {
+    console.warn("Base profile could not be loaded.", error);
   }
+
   if (configured()) {
     try {
       const snap = await getDoc(doc(db, "publicContent", "profile"));
-      if (snap.exists() && snap.data().html) html = snap.data().html;
+      if (snap.exists() && typeof snap.data().html === "string") {
+        cloudHtml = snap.data().html;
+      }
     } catch (error) {
       console.warn("Cloud profile could not be loaded.", error);
     }
   }
+
+  let html = "";
+  if (isUsableProfileHtml(cloudHtml)) {
+    html = cloudHtml;
+  } else if (isUsableProfileHtml(localHtml)) {
+    html = localHtml;
+  } else if (isUsableProfileHtml(baseHtml)) {
+    html = baseHtml;
+  }
+
+  if (!html) {
+    $("status").textContent = "Profile preview could not be loaded";
+    msg("The editor could not find a valid profile document. Reload the page once.", true);
+    return;
+  }
+
+  // Replace any previously corrupted/blank local draft with a valid source.
+  if (!isUsableProfileHtml(localHtml)) {
+    localStorage.setItem(localKey, html);
+  }
+
   loadPublishedFontsFromHtml(html);
   render(html, false);
   state.ready = true;
+
+  // Some desktop browsers can delay iframe srcdoc painting after the UI is rearranged.
+  requestAnimationFrame(() => {
+    if (!$("preview").contentDocument?.body?.children?.length) {
+      $("preview").srcdoc = state.html;
+    }
+  });
 }
 
 function selectedElement() {
