@@ -320,6 +320,7 @@ body:before{
   }
 </style>
 
+<style>#recoverProfile{display:inline-flex!important}</style>
 </head>
 <body>
 <div><h2>Profile Admin</h2><p>Manage, preview, and publish your profile content.</p></div></div>
@@ -577,7 +578,7 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
     const group1 = el("div","premium-toolbar-group");
     const group2 = el("div","premium-toolbar-group");
 
-    ["undo","redo","addSection","addField","duplicateSelected","moveUp","moveDown","toggleHidden","removeSelected","imageBtn"]
+    ["undo","redo","recoverProfile","addSection","addField","duplicateSelected","moveUp","moveDown","toggleHidden","removeSelected","imageBtn"]
       .forEach(id => {
         const n = byId(id);
         if (n) group1.appendChild(n);
@@ -677,5 +678,6 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
 </script>
 
 
+<button type="button" id="recoverProfile" style="display:none">Recover profile</button>
 </body>
 </html>
