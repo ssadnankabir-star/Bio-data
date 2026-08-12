@@ -128,6 +128,7 @@ async function loadContent() {
       console.warn("Cloud profile could not be loaded.", error);
     }
   }
+  loadPublishedFontsFromHtml(html);
   render(html, false);
   state.ready = true;
 }
@@ -224,7 +225,40 @@ $("reset").onclick = async () => {
 
 $("logout").onclick = () => auth && signOut(auth);
 
+
+function applyPublishedFontsToHtml(sourceHtml) {
+  const titleFont = window.adminFontSettings?.title || "Tiro Bangla";
+  const bodyFont = window.adminFontSettings?.body || "Noto Sans Bengali";
+  const holder = `<div id="publishedFontConfig" data-title-font="${titleFont}" data-body-font="${bodyFont}" hidden></div>`;
+
+  let output = sourceHtml || "";
+  const existing = /<div id="publishedFontConfig"[^>]*><\/div>/i;
+  if (existing.test(output)) {
+    output = output.replace(existing, holder);
+  } else if (/<body[^>]*>/i.test(output)) {
+    output = output.replace(/(<body[^>]*>)/i, `$1\n${holder}`);
+  }
+  return output;
+}
+
+function loadPublishedFontsFromHtml(sourceHtml) {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(sourceHtml || "", "text/html");
+    const cfg = doc.getElementById("publishedFontConfig");
+    window.adminFontSettings?.load(
+      cfg?.dataset?.titleFont || "Tiro Bangla",
+      cfg?.dataset?.bodyFont || "Noto Sans Bengali"
+    );
+  } catch {
+    window.adminFontSettings?.load("Tiro Bangla", "Noto Sans Bengali");
+  }
+}
+
 async function saveToCloud() {
+  state.html = applyPublishedFontsToHtml(state.html);
+  localStorage.setItem(localKey, state.html);
+  $("preview").srcdoc = state.html;
   persistLocal();
   if (!configured()) return msg("Local draft saved. Firebase config is required for cloud publishing.", true);
   if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== ADMIN || auth.currentUser.uid !== ADMIN_UID) return msg("Please sign in as the administrator.", true);
