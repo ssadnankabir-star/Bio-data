@@ -422,7 +422,7 @@ window.PROFILE_ADMIN_EMAIL = "ssadnankabir@gmail.com";
 window.PROFILE_ADMIN_UID = "VM9V5M67iHO66p4SOFw43RgB3ml2";
 
 </script>
-<script type="module" src="js/admin.js?v=20260811-2204"></script>
+<script type="module" src="js/admin.js?v=20260812-splashfix3"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -679,5 +679,14 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
 
 
 <button type="button" id="recoverProfile" style="display:none">Recover profile</button>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    // Keep registrations intact for the public app. Admin assets use cache-busted URLs.
+  });
+}
+</script>
+
 </body>
 </html>
