@@ -276,6 +276,50 @@ body:before{
 }
 </style>
 
+
+<style id="premiumAdminDesktopFix">
+  .premium-main-grid{width:100%!important}
+  .premium-left{min-width:0!important;width:100%!important}
+  .premium-preview-shell{width:100%!important;overflow:hidden!important}
+  #preview{
+    display:block!important;
+    width:100%!important;
+    height:78vh!important;
+    min-height:760px!important;
+  }
+  .premium-toolbar{
+    position:sticky!important;
+    top:90px!important;
+    z-index:20!important;
+  }
+  .premium-toolbar-group{max-width:100%!important}
+  .premium-data-actions{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+    padding:14px!important;
+    border-top:1px solid var(--pa-line)!important;
+    background:#fff!important;
+  }
+  .premium-data-actions button,
+  .premium-data-actions .button{
+    min-height:36px!important;
+    padding:0 11px!important;
+    border-radius:10px!important;
+    border:1px solid var(--pa-line)!important;
+    background:#fff!important;
+    color:var(--pa-text)!important;
+    font-size:10px!important;
+    font-weight:700!important;
+    display:inline-flex!important;
+    align-items:center!important;
+  }
+  @media(max-width:940px){
+    #preview{height:72vh!important;min-height:620px!important}
+    .premium-toolbar{position:static!important}
+  }
+</style>
+
 </head>
 <body>
 <div><h2>Profile Admin</h2><p>Manage, preview, and publish your profile content.</p></div></div>
@@ -441,24 +485,25 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
 </script>
 
 
+
 <script id="premiumAdminShellV3">
 (() => {
   function el(tag, cls, html){
-    const node=document.createElement(tag);
-    if(cls) node.className=cls;
-    if(html!==undefined) node.innerHTML=html;
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (html !== undefined) node.innerHTML = html;
     return node;
   }
-
-  function byId(id){ return document.getElementById(id); }
+  const byId = id => document.getElementById(id);
 
   function buildShell(){
-    if(document.querySelector(".premium-admin-shell")) return;
+    if (document.querySelector(".premium-admin-shell")) return;
 
-    const body=document.body;
-    const shell=el("div","premium-admin-shell");
-    const top=el("div","premium-admin-topbar");
-    top.innerHTML=`
+    const body = document.body;
+    const shell = el("div","premium-admin-shell");
+
+    const top = el("div","premium-admin-topbar");
+    top.innerHTML = `
       <div class="premium-brand">
         <div class="premium-brand-mark">SK</div>
         <div class="premium-brand-copy">
@@ -472,19 +517,18 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
       </div>`;
     shell.appendChild(top);
 
-    const existing=[...body.children].filter(n=>n!==shell && n.id!=="installAppBtn" && n.id!=="pwaInstallHint" && n.tagName!=="SCRIPT");
-    const originalHost=el("div","premium-original-host");
-    existing.forEach(n=>originalHost.appendChild(n));
+    const loginBox = byId("loginBox");
+    const editorBox = byId("editorBox");
+    const email = byId("email");
+    const password = byId("password");
+    const loginBtn = byId("login");
+    const reset = byId("reset");
+    const msg = byId("message");
+    const preview = byId("preview");
 
-    const loginBtn=byId("loginBtn");
-    const email=byId("email");
-    const password=byId("password");
-    const reset=byId("reset");
-    const msg=byId("msg");
-
-    const loginWrap=el("div","premium-login-wrap");
-    const loginCard=el("div","premium-login-card");
-    loginCard.innerHTML=`
+    const loginWrap = el("div","premium-login-wrap");
+    const loginCard = el("div","premium-login-card");
+    loginCard.innerHTML = `
       <div class="premium-login-hero">
         <div class="mini">Secure Admin Access</div>
         <h2>Welcome back</h2>
@@ -501,112 +545,137 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
       </div>`;
     loginWrap.appendChild(loginCard);
 
-    if(email){
-      const slot=loginCard.querySelector(".premium-email-slot");
-      const label=document.createElement("label"); label.textContent="Admin Email";
+    if (email) {
+      const slot = loginCard.querySelector(".premium-email-slot");
+      const label = document.createElement("label");
+      label.textContent = "Admin Email";
       slot.append(label,email);
     }
-    if(password){
-      const slot=loginCard.querySelector(".premium-password-slot");
-      const label=document.createElement("label"); label.textContent="Password";
+    if (password) {
+      const slot = loginCard.querySelector(".premium-password-slot");
+      const label = document.createElement("label");
+      label.textContent = "Password";
       slot.append(label,password);
     }
-    if(loginBtn) loginCard.querySelector(".premium-login-btn-slot").appendChild(loginBtn);
-    if(reset) loginCard.querySelector(".premium-reset-slot").appendChild(reset);
-    if(msg) loginCard.querySelector(".premium-msg-slot").appendChild(msg);
+    if (loginBtn) loginCard.querySelector(".premium-login-btn-slot").appendChild(loginBtn);
+    if (reset) loginCard.querySelector(".premium-reset-slot").appendChild(reset);
+    if (msg) loginCard.querySelector(".premium-msg-slot").appendChild(msg);
 
-    const mainGrid=el("div","premium-main-grid");
-    const left=el("div","premium-left");
-    const right=el("aside","premium-right");
+    const mainGrid = el("div","premium-main-grid");
+    const left = el("div","premium-left");
+    const right = el("aside","premium-right");
 
-    const editorCard=el("section","premium-card");
-    const editorHead=el("div","premium-card-head",`
-      <div><h2>Live Profile Editor</h2><p>Select text or sections inside the preview, then edit and publish.</p></div>
+    const editorCard = el("section","premium-card");
+    const editorHead = el("div","premium-card-head",`
+      <div>
+        <h2>Content Editor</h2>
+        <p>Double-click editable text inside the preview. Click a section or card to select it.</p>
+      </div>
       <span id="premiumStatusMirror" style="font-size:10px;color:var(--pa-muted)"></span>`);
-    const toolbar=el("div","premium-toolbar");
-    const group1=el("div","premium-toolbar-group");
-    const group2=el("div","premium-toolbar-group");
-    ["undo","redo","addItem","duplicateSelected","removeSelected","replaceImage"].forEach(id=>{const n=byId(id);if(n)group1.appendChild(n)});
-    ["save","publish","logout"].forEach(id=>{const n=byId(id);if(n)group2.appendChild(n)});
+
+    const toolbar = el("div","premium-toolbar");
+    const group1 = el("div","premium-toolbar-group");
+    const group2 = el("div","premium-toolbar-group");
+
+    ["undo","redo","addSection","addField","duplicateSelected","moveUp","moveDown","toggleHidden","removeSelected","imageBtn"]
+      .forEach(id => {
+        const n = byId(id);
+        if (n) group1.appendChild(n);
+      });
+
+    ["save","publish","logout"].forEach(id => {
+      const n = byId(id);
+      if (n) group2.appendChild(n);
+    });
+
     toolbar.append(group1,group2);
-    const previewShell=el("div","premium-preview-shell");
-    const preview=byId("preview");
-    if(preview) previewShell.appendChild(preview);
+
+    const previewShell = el("div","premium-preview-shell");
+    if (preview) previewShell.appendChild(preview);
+
+    const dataActions = editorBox?.querySelector(".data-actions");
+    if (dataActions) {
+      dataActions.classList.add("premium-data-actions");
+    }
+
     editorCard.append(editorHead,toolbar,previewShell);
+    if (dataActions) editorCard.appendChild(dataActions);
     left.appendChild(editorCard);
 
-    const fontCardSource=document.querySelector(".admin-font-card");
-    if(fontCardSource){
-      const card=el("section","premium-card premium-font-panel");
-      card.appendChild(el("div","premium-card-head",`<div><h3>বাংলা ফন্ট</h3><p>এই সেটিং Publish করলে সবাই একই ফন্ট দেখবে।</p></div>`));
-      const bodyWrap=el("div","premium-card-body");
+    const fontCardSource = document.querySelector(".admin-font-card");
+    if (fontCardSource) {
+      const card = el("section","premium-card premium-font-panel");
+      card.appendChild(el("div","premium-card-head",`
+        <div><h3>বাংলা ফন্ট</h3><p>Publish করলে এই font choice সবাই দেখবে।</p></div>`));
+      const bodyWrap = el("div","premium-card-body");
       bodyWrap.appendChild(fontCardSource);
       card.appendChild(bodyWrap);
       right.appendChild(card);
     }
 
-    const tools=el("section","premium-card");
-    tools.appendChild(el("div","premium-card-head",`<div><h3>Editor Tools</h3><p>Quick actions for the selected content.</p></div>`));
-    const toolsBody=el("div","premium-card-body");
-    toolsBody.innerHTML=`<div class="premium-side-group"><div class="premium-side-label">Actions</div><div class="premium-side-actions" id="premiumSideActions"></div></div>`;
-    tools.appendChild(toolsBody);
+    const tools = el("section","premium-card");
+    tools.appendChild(el("div","premium-card-head",`
+      <div><h3>Editor Tools</h3><p>Quick actions for selected content.</p></div>`));
+    tools.appendChild(el("div","premium-card-body",`
+      <div class="premium-footnote" style="margin-top:0">
+        <strong style="color:var(--pa-green)">How to edit</strong><br>
+        Double-click text inside the preview to edit it.<br><br>
+        Select a section or card, then use the toolbar to duplicate, reorder, hide/show, remove, or replace images.
+      </div>`));
     right.appendChild(tools);
 
-    const help=el("section","premium-card");
-    help.appendChild(el("div","premium-card-head",`<div><h3>Publishing</h3><p>Firebase-secured workflow</p></div>`));
+    const help = el("section","premium-card");
+    help.appendChild(el("div","premium-card-head",`
+      <div><h3>Publishing</h3><p>Firebase-secured workflow</p></div>`));
     help.appendChild(el("div","premium-card-body",`
       <div class="premium-footnote" style="margin-top:0">
         <strong style="color:var(--pa-green)">Recommended flow</strong><br>
         Edit → Review preview → Save / Publish.<br><br>
-        Only your authenticated Firebase admin account can publish to the public profile.
+        Only your authenticated Firebase admin account can publish.
       </div>`));
     right.appendChild(help);
 
     mainGrid.append(left,right);
     shell.append(loginWrap,mainGrid);
     body.prepend(shell);
-    shell.appendChild(originalHost);
 
-    // move any leftover relevant buttons into side action grid
-    const side=byId("premiumSideActions");
-    ["addItem","duplicateSelected","removeSelected","replaceImage"].forEach(id=>{
-      const n=byId(id);
-      if(n && side && !toolbar.contains(n)) side.appendChild(n);
-    });
+    // Hide the legacy wrappers after moving their functional elements.
+    const oldTop = document.querySelector("header.top");
+    const oldMain = document.querySelector("main.layout");
+    if (oldTop) oldTop.style.display = "none";
+    if (oldMain) oldMain.style.display = "none";
 
     function syncAuthUI(){
-      const editorVisible = preview && getComputedStyle(preview).display!=="none";
-      // The app already controls auth visibility; mirror that state by checking login button parent.
-      const authContainer = email?.closest("form,section,div");
-      const signedIn = byId("logout") && getComputedStyle(byId("logout")).display!=="none";
-      if(signedIn){
-        loginWrap.style.display="none";
-        mainGrid.style.display="grid";
-      }else{
-        mainGrid.style.display="none";
-        loginWrap.style.display="grid";
-      }
+      const signedIn = editorBox ? !editorBox.hidden : false;
+      loginWrap.style.display = signedIn ? "none" : "grid";
+      mainGrid.style.display = signedIn ? "grid" : "none";
     }
 
-    // mirror status text in header
-    const status=byId("status");
-    const mirror=byId("premiumStatusMirror");
-    if(status && mirror){
-      const obs=new MutationObserver(()=>mirror.textContent=status.textContent||"");
+    const status = byId("status");
+    const mirror = byId("premiumStatusMirror");
+    if (status && mirror) {
+      const obs = new MutationObserver(() => {
+        mirror.textContent = status.textContent || "";
+      });
       obs.observe(status,{childList:true,subtree:true,characterData:true});
-      mirror.textContent=status.textContent||"";
+      mirror.textContent = status.textContent || "";
     }
 
-    const authObserver=new MutationObserver(syncAuthUI);
-    authObserver.observe(body,{attributes:true,subtree:true,attributeFilter:["style","class"]});
-    setInterval(syncAuthUI,800);
+    const authObserver = new MutationObserver(syncAuthUI);
+    if (loginBox) authObserver.observe(loginBox,{attributes:true,attributeFilter:["hidden"]});
+    if (editorBox) authObserver.observe(editorBox,{attributes:true,attributeFilter:["hidden"]});
+
     syncAuthUI();
   }
 
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",buildShell);
-  else buildShell();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", buildShell);
+  } else {
+    buildShell();
+  }
 })();
 </script>
+
 
 </body>
 </html>
