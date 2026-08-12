@@ -83,19 +83,34 @@ if (configured()) {
 
 function cleanHtml() {
   const d = $("preview").contentDocument;
-  if (!d) return "";
+  if (!d) return state.html || "";
+
   const clone = d.documentElement.cloneNode(true);
   clone.querySelectorAll("#portfolioTools,script,style[data-admin]").forEach((node) => node.remove());
   clone.querySelectorAll("[contenteditable]").forEach((node) => node.removeAttribute("contenteditable"));
   clone.querySelectorAll(".cms-selected").forEach((node) => node.classList.remove("cms-selected"));
   clone.querySelector("body")?.classList.remove("cms-editing");
-  return "<!doctype html>\n" + clone.outerHTML;
+
+  const candidate = "<!doctype html>\n" + clone.outerHTML;
+
+  // Never overwrite a valid profile with the temporary blank iframe shell.
+  if (!isUsableProfileHtml(candidate)) {
+    return isUsableProfileHtml(state.html) ? state.html : "";
+  }
+
+  return candidate;
 }
 
 function persistLocal() {
-  state.html = cleanHtml();
+  const cleaned = cleanHtml();
+  if (!isUsableProfileHtml(cleaned)) {
+    $("status").textContent = "Waiting for profile preview";
+    return false;
+  }
+  state.html = cleaned;
   localStorage.setItem(localKey, state.html);
   $("status").textContent = "Local draft saved";
+  return true;
 }
 
 function snapshot() {
@@ -129,7 +144,7 @@ async function loadContent() {
   let cloudHtml = "";
 
   try {
-    const response = await fetch("index.html?v=" + Date.now(), { cache: "no-store" });
+    const response = await fetch("index.html?adminPreview=" + Date.now(), { cache: "no-store" });
     baseHtml = await response.text();
   } catch (error) {
     console.warn("Base profile could not be loaded.", error);
@@ -146,6 +161,7 @@ async function loadContent() {
     }
   }
 
+  // A previously published blank shell must never win.
   let html = "";
   if (isUsableProfileHtml(cloudHtml)) {
     html = cloudHtml;
@@ -155,27 +171,30 @@ async function loadContent() {
     html = baseHtml;
   }
 
-  if (!html) {
+  if (!isUsableProfileHtml(html)) {
     $("status").textContent = "Profile preview could not be loaded";
-    msg("The editor could not find a valid profile document. Reload the page once.", true);
+    msg("The editor could not find a complete profile. Make sure index.html is in the repository root.", true);
     return;
   }
 
-  // Replace any previously corrupted/blank local draft with a valid source.
+  // Heal a corrupted local draft automatically.
   if (!isUsableProfileHtml(localHtml)) {
     localStorage.setItem(localKey, html);
   }
 
+  state.html = html;
   loadPublishedFontsFromHtml(html);
   render(html, false);
   state.ready = true;
 
-  // Some desktop browsers can delay iframe srcdoc painting after the UI is rearranged.
-  requestAnimationFrame(() => {
-    if (!$("preview").contentDocument?.body?.children?.length) {
+  // Force a second paint on desktop if srcdoc is delayed.
+  setTimeout(() => {
+    const d = $("preview").contentDocument;
+    const bodyText = d?.body?.textContent?.trim() || "";
+    if (bodyText.length < 100 && isUsableProfileHtml(state.html)) {
       $("preview").srcdoc = state.html;
     }
-  });
+  }, 250);
 }
 
 function selectedElement() {
@@ -301,19 +320,38 @@ function loadPublishedFontsFromHtml(sourceHtml) {
 }
 
 async function saveToCloud() {
-  state.html = applyPublishedFontsToHtml(state.html);
+  const cleaned = cleanHtml();
+
+  if (!isUsableProfileHtml(cleaned)) {
+    return msg("Profile preview is not ready yet. Reload once, wait for the profile to appear, then publish.", true);
+  }
+
+  state.html = applyPublishedFontsToHtml(cleaned);
+
+  if (!isUsableProfileHtml(state.html)) {
+    return msg("Publish stopped because the profile document was incomplete.", true);
+  }
+
   localStorage.setItem(localKey, state.html);
-  $("preview").srcdoc = state.html;
-  persistLocal();
-  if (!configured()) return msg("Local draft saved. Firebase config is required for cloud publishing.", true);
-  if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== ADMIN || auth.currentUser.uid !== ADMIN_UID) return msg("Please sign in as the administrator.", true);
+  $("status").textContent = "Local draft saved";
+
+  if (!configured()) {
+    return msg("Local draft saved. Firebase config is required for cloud publishing.", true);
+  }
+
+  if (!auth.currentUser ||
+      auth.currentUser.email?.toLowerCase() !== ADMIN ||
+      auth.currentUser.uid !== ADMIN_UID) {
+    return msg("Please sign in as the administrator.", true);
+  }
+
   try {
     await setDoc(doc(db, "publicContent", "profile"), {
       html: state.html,
       updatedAt: serverTimestamp(),
       updatedBy: auth.currentUser.uid,
       contentType: "personal-profile",
-      schemaVersion: 2
+      schemaVersion: 3
     });
     $("status").textContent = "Published to cloud";
     msg("Profile saved and published.");
@@ -560,3 +598,24 @@ if (auth) {
     }
   });
 }
+
+
+async function recoverFromIndex() {
+  try {
+    const response = await fetch("index.html?recover=" + Date.now(), { cache: "no-store" });
+    const html = await response.text();
+    if (!isUsableProfileHtml(html)) {
+      return msg("index.html does not contain a complete profile.", true);
+    }
+    state.html = html;
+    localStorage.setItem(localKey, html);
+    loadPublishedFontsFromHtml(html);
+    render(html, false);
+    $("status").textContent = "Recovered from index.html";
+    msg("Profile preview recovered. Review it, then Publish to public page.");
+  } catch (error) {
+    msg("Recovery failed: " + error.message, true);
+  }
+}
+
+document.getElementById("recoverProfile")?.addEventListener("click", recoverFromIndex);
