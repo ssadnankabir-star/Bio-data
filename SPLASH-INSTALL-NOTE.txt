@@ -1,0 +1,2 @@
+Opening splash added to the public profile. It appears briefly with the profile photo, name, and Personal Profile label, then fades away automatically.
+Install App is no longer a floating button. It appears as a clean card at the very bottom only when Chrome exposes the install prompt.

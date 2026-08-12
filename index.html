@@ -1100,8 +1100,166 @@
 <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
+
+<style>
+  /* App opening splash */
+  #appSplash{
+    position:fixed;
+    inset:0;
+    z-index:2147483646;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 50% 38%, rgba(212,175,55,.13), transparent 30%),
+      linear-gradient(180deg,#FBF7EE 0%,#F6F2E8 100%);
+    opacity:1;
+    visibility:visible;
+    transition:opacity .48s ease, visibility .48s ease;
+  }
+  #appSplash.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .app-splash-inner{
+    text-align:center;
+    padding:24px;
+    animation:splashIn .72s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .app-splash-photo{
+    width:92px;
+    height:92px;
+    margin:0 auto 15px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid #D4AF37;
+    box-shadow:
+      0 14px 34px rgba(15,61,46,.16),
+      0 0 0 7px rgba(212,175,55,.08);
+    background:#fff;
+  }
+  .app-splash-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .app-splash-name{
+    margin:0;
+    font-family:'Playfair Display',serif;
+    font-size:26px;
+    line-height:1.25;
+    color:#0A2B20;
+    font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .app-splash-sub{
+    margin:6px 0 0;
+    font:600 10px/1.4 Inter,sans-serif;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:#B8860B;
+  }
+  .app-splash-line{
+    width:54px;
+    height:1px;
+    margin:14px auto 0;
+    background:linear-gradient(90deg,transparent,#D4AF37,transparent);
+  }
+  @keyframes splashIn{
+    0%{opacity:0;transform:translateY(8px) scale(.96)}
+    100%{opacity:1;transform:translateY(0) scale(1)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .app-splash-inner{animation:none}
+    #appSplash{transition:none}
+  }
+
+  /* Bottom install card */
+  #installAppSection{
+    display:none;
+    max-width:920px;
+    margin:18px auto 28px;
+    padding:0 12px;
+  }
+  .install-app-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:15px 16px;
+    border:1px solid #E7DECA;
+    border-radius:14px;
+    background:linear-gradient(180deg,#FFF,#FBF9F3);
+    box-shadow:0 8px 22px rgba(15,61,46,.05);
+  }
+  .install-app-info{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
+  }
+  .install-app-icon{
+    width:42px;
+    height:42px;
+    border-radius:11px;
+    object-fit:cover;
+    flex:0 0 auto;
+    border:1px solid #D9CFB7;
+  }
+  .install-app-copy strong{
+    display:block;
+    font:700 12px Inter,sans-serif;
+    color:#0F3D2E;
+    margin-bottom:3px;
+  }
+  .install-app-copy span{
+    display:block;
+    font:400 10.5px/1.5 Inter,sans-serif;
+    color:#6A6358;
+  }
+  #installAppBtn{
+    position:static!important;
+    right:auto!important;
+    bottom:auto!important;
+    z-index:auto!important;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:38px;
+    padding:9px 14px;
+    border:0;
+    border-radius:10px;
+    background:#0F3D2E;
+    color:#fff;
+    font:600 11px Inter,sans-serif;
+    box-shadow:none;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  #installAppBtn:hover{background:#164F3C}
+  @media(max-width:560px){
+    .install-app-card{align-items:flex-start;flex-direction:column}
+    #installAppBtn{width:100%}
+  }
+  @media print{#appSplash,#installAppSection{display:none!important}}
+</style>
+
 </head>
 <body>
+
+<div id="appSplash" aria-hidden="true">
+  <div class="app-splash-inner">
+    <div class="app-splash-photo">
+      <img src="assets/profile.jpg" alt="Sadnan Kaabeer">
+    </div>
+    <h1 class="app-splash-name">Sadnan Kaabeer</h1>
+    <p class="app-splash-sub">Personal Profile</p>
+    <div class="app-splash-line"></div>
+  </div>
+</div>
+
 <div class="wrap">
   <div class="frame-outer">
     <div class="frame-inner">
@@ -1562,19 +1720,54 @@ if ('serviceWorker' in navigator) {
 </script>
 
 
-<button type="button" id="installAppBtn" style="display:none;position:fixed;right:14px;bottom:14px;z-index:5000;border:0;border-radius:999px;padding:11px 15px;background:#0F3D2E;color:#fff;font:600 12px Inter,sans-serif;box-shadow:0 10px 28px rgba(15,61,46,.24);cursor:pointer">Install App</button>
+
+
+
+
+
+
+<section id="installAppSection" aria-label="Install app">
+  <div class="install-app-card">
+    <div class="install-app-info">
+      <img class="install-app-icon" src="assets/icon-192.png" alt="">
+      <div class="install-app-copy">
+        <strong>Install Sadnan Profile</strong>
+        <span>Open this profile like a standalone app from Chrome.</span>
+      </div>
+    </div>
+    <button type="button" id="installAppBtn">Install App</button>
+  </div>
+</section>
 <script>
-let deferredInstallPrompt=null;
-const installBtn=document.getElementById('installAppBtn');
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;if(installBtn)installBtn.style.display='block';});
-installBtn?.addEventListener('click',async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBtn.style.display='none';});
-window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.display='none';});
+(() => {
+  const splash = document.getElementById('appSplash');
+  const installSection = document.getElementById('installAppSection');
+  const installBtn = document.getElementById('installAppBtn');
+  let installPrompt = null;
+
+  window.addEventListener('load', () => {
+    window.setTimeout(() => splash?.classList.add('hide'), 1150);
+  });
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    installPrompt = event;
+    if (installSection) installSection.style.display = 'block';
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    if (installSection) installSection.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    if (installSection) installSection.style.display = 'none';
+  });
+})();
 </script>
-
-
-<div id="pwaInstallHint" style="display:none;position:fixed;right:14px;bottom:62px;z-index:4999;max-width:290px;background:#fff;border:1px solid #e7dfcf;border-radius:14px;padding:12px 14px;box-shadow:0 14px 36px rgba(15,61,46,.14);font:12px/1.55 Inter,sans-serif;color:#4f4a42">
-  Install করলে এটি আলাদা app হিসেবে খুলবে এবং home screen/app drawer-এ আপনার profile picture icon দেখাবে।
-</div>
 
 </body>
 </html>
