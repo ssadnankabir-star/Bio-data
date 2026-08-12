@@ -1543,5 +1543,22 @@ loadPublished();
 })();
 </script>
 
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error));
+}
+</script>
+
+
+<button type="button" id="installAppBtn" style="display:none;position:fixed;right:14px;bottom:14px;z-index:5000;border:0;border-radius:999px;padding:11px 15px;background:#0F3D2E;color:#fff;font:600 12px Inter,sans-serif;box-shadow:0 10px 28px rgba(15,61,46,.24);cursor:pointer">Install App</button>
+<script>
+let deferredInstallPrompt=null;
+const installBtn=document.getElementById('installAppBtn');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;if(installBtn)installBtn.style.display='block';});
+installBtn?.addEventListener('click',async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBtn.style.display='none';});
+window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.display='none';});
+</script>
+
 </body>
 </html>

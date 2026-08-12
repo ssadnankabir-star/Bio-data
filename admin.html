@@ -6,8 +6,38 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Admin — Sadnan Personal Profile</title>
 <link rel="stylesheet" href="assets/admin.css">
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F3D2E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sadnan Profile">
+<link rel="apple-touch-icon" href="assets/profile.jpg">
+
+
+<style>
+:root{--admin-green:#0F3D2E;--admin-gold:#B8860B;--admin-bg:#F7F4EC;--admin-card:#fff;--admin-line:#E8E1D2;--admin-muted:#6A6358}
+body{background:linear-gradient(180deg,#FBF9F4,#F5F1E8)!important;color:#241F1A!important}
+.admin-topbar{position:sticky;top:8px;z-index:2000;max-width:1180px;margin:10px auto 18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid var(--admin-line);border-radius:18px;box-shadow:0 14px 36px rgba(15,61,46,.08)}
+.admin-brand{display:flex;align-items:center;gap:11px}.admin-logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#0F3D2E,#176047);color:white;font:700 14px Inter,sans-serif;box-shadow:0 8px 20px rgba(15,61,46,.2)}
+.admin-brand h2{margin:0;color:#0F3D2E;font-size:18px}.admin-brand p{margin:2px 0 0;color:var(--admin-muted);font-size:11px}
+.admin-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.admin-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:#EFF6F2;border:1px solid #D8E9DF;color:#0F3D2E;font-size:10px;font-weight:700}.admin-badge:before{content:'';width:7px;height:7px;border-radius:50%;background:#26A269}
+.card,.panel,section{border-radius:16px!important;border-color:var(--admin-line)!important;box-shadow:0 12px 30px rgba(15,61,46,.06)!important}
+input,textarea,select{border-radius:10px!important;border-color:var(--admin-line)!important;min-height:42px!important;background:#fff!important}
+input:focus,textarea:focus,select:focus{outline:none!important;border-color:rgba(15,61,46,.45)!important;box-shadow:0 0 0 3px rgba(15,61,46,.08)!important}
+button,.btn,a.btn{border-radius:10px!important;transition:.16s ease}button:hover,.btn:hover,a.btn:hover{transform:translateY(-1px)}
+#loginBtn,#saveBtn,#publishBtn{background:#0F3D2E!important;color:#fff!important;border-color:#0F3D2E!important}
+.admin-tip{max-width:1180px;margin:12px auto 28px;padding:12px 14px;border:1px solid var(--admin-line);border-radius:13px;background:#FCFAF5;color:var(--admin-muted);font-size:11px;line-height:1.65}
+@media(max-width:700px){.admin-topbar{margin:7px 7px 14px;align-items:flex-start;flex-direction:column}.admin-brand p{display:none}}
+</style>
+
 </head>
 <body>
+<div class="admin-topbar">
+  <div class="admin-brand"><div class="admin-logo">SK</div><div><h2>Profile Admin</h2><p>Manage, preview, and publish your profile content.</p></div></div>
+  <div class="admin-actions"><span class="admin-badge">Firebase Connected</span><a href="index.html" target="_blank" rel="noopener">View Profile</a></div>
+</div>
+
 <header class="top">
   <div><b>Sadnan Personal Profile CMS</b><span id="status">Checking session…</span></div>
   <div class="actions">
@@ -69,5 +99,23 @@ window.PROFILE_ADMIN_UID = "VM9V5M67iHO66p4SOFw43RgB3ml2";
 
 </script>
 <script type="module" src="js/admin.js?v=20260811-2204"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error));
+}
+</script>
+
+
+<button type="button" id="installAppBtn" style="display:none;position:fixed;right:14px;bottom:14px;z-index:5000;border:0;border-radius:999px;padding:11px 15px;background:#0F3D2E;color:#fff;font:600 12px Inter,sans-serif;box-shadow:0 10px 28px rgba(15,61,46,.24);cursor:pointer">Install App</button>
+<script>
+let deferredInstallPrompt=null;
+const installBtn=document.getElementById('installAppBtn');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;if(installBtn)installBtn.style.display='block';});
+installBtn?.addEventListener('click',async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBtn.style.display='none';});
+window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.display='none';});
+</script>
+
+<div class="admin-tip"><strong>Tip:</strong> Edit your content, review the live profile, then use Save / Publish. Only your Firebase-authenticated admin account can publish.</div>
 </body>
 </html>

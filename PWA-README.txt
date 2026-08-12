@@ -1,0 +1,1 @@
+Upload all files to GitHub Pages. Chrome can install the site because manifest.webmanifest and service-worker.js are included. GitHub Pages provides HTTPS. If Install App does not appear immediately, refresh once and use Chrome menu > Install app / Add to Home screen.
