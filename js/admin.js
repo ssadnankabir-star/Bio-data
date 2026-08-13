@@ -125,27 +125,32 @@ function buildAdminPreviewHtml(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(String(html || ""), "text/html");
 
-  // Never run public scripts inside the editor.
-  doc.querySelectorAll("script").forEach(node => node.remove());
+  // Keep only the language script so বাং / EN still works in Admin preview.
+  doc.querySelectorAll("script").forEach(node => {
+    const src = node.getAttribute("src") || "";
+    const keepI18n = /(?:^|\/)i18n\.js(?:\?|$)/i.test(src);
+    if (!keepI18n) node.remove();
+  });
 
-  // Remove all public-only app UI before the preview is painted.
+  // Public-only app UI must never appear in the editor.
   doc.querySelectorAll(
-    "#appSplash,#installAppSection,#installAppBtn,#pwaInstallHint,#portfolioTools"
+    "#appSplash,#installAppSection,#installAppBtn,#pwaInstallHint,#portfolioTools,.live-share-modal"
   ).forEach(node => node.remove());
 
-  // Remove splash-specific style blocks as well, so no overlay can survive.
+  // Remove splash/install CSS blocks.
   [...doc.querySelectorAll("style")].forEach(style => {
     const text = style.textContent || "";
     if (
       text.includes("App opening splash") ||
       text.includes("#appSplash") ||
-      text.includes(".app-splash-")
+      text.includes(".app-splash-") ||
+      text.includes("#installAppSection")
     ) {
       style.remove();
     }
   });
 
-  // Make all relative assets resolve against the real public site.
+  // Resolve assets/scripts correctly from the live site.
   if (!doc.querySelector("base")) {
     const base = doc.createElement("base");
     base.href = new URL("./", window.location.href).href;
@@ -158,7 +163,9 @@ function buildAdminPreviewHtml(html) {
     html,body{min-height:100%!important;overflow:auto!important}
     body{opacity:1!important;visibility:visible!important}
     .wrap,.frame-outer,.frame-inner{opacity:1!important;visibility:visible!important}
-    #appSplash,#installAppSection,#installAppBtn,#pwaInstallHint{display:none!important}
+    #appSplash,#installAppSection,#installAppBtn,#pwaInstallHint,.live-share-modal{
+      display:none!important
+    }
   `;
   doc.head.appendChild(guard);
 
