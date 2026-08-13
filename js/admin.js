@@ -850,3 +850,146 @@ async function recoverFromIndex() {
 }
 
 document.getElementById("recoverProfile")?.addEventListener("click", recoverFromIndex);
+
+
+
+const UPDATE_FUNCTION_URL = "https://asia-south1-sadnan-personal-profile.cloudfunctions.net/applyGithubUpdate";
+let selectedUpdateFile = null;
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+
+async function inspectZipFile(file) {
+  if (!file) return;
+  if (!/\.zip$/i.test(file.name)) {
+    msg("Please select a .zip update package.", true);
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    msg("Update ZIP is too large. Keep changed-files ZIP under 8 MB.", true);
+    return;
+  }
+
+  selectedUpdateFile = file;
+  const list = document.getElementById("updateFileList");
+  const apply = document.getElementById("applyUpdateBtn");
+  if (list) {
+    list.innerHTML = `
+      <div class="update-file-row">
+        <span>${file.name}</span>
+        <small>${formatBytes(file.size)}</small>
+      </div>`;
+  }
+  if (apply) apply.disabled = false;
+}
+
+function clearUpdateSelection() {
+  selectedUpdateFile = null;
+  const input = document.getElementById("updateZipInput");
+  const list = document.getElementById("updateFileList");
+  const progress = document.getElementById("updateProgress");
+  const apply = document.getElementById("applyUpdateBtn");
+  if (input) input.value = "";
+  if (list) list.innerHTML = "";
+  if (progress) { progress.textContent = ""; progress.classList.remove("show"); }
+  if (apply) apply.disabled = true;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const value = String(reader.result || "");
+      resolve(value.includes(",") ? value.split(",")[1] : value);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function applyImportedUpdate() {
+  if (!selectedUpdateFile) return;
+  if (!auth?.currentUser) return msg("Please sign in as the administrator first.", true);
+
+  const progress = document.getElementById("updateProgress");
+  const apply = document.getElementById("applyUpdateBtn");
+  if (progress) {
+    progress.textContent = "Preparing ZIP and verifying admin access...";
+    progress.classList.add("show");
+  }
+  if (apply) apply.disabled = true;
+
+  try {
+    const idToken = await auth.currentUser.getIdToken(true);
+    const zipBase64 = await fileToBase64(selectedUpdateFile);
+
+    if (progress) progress.textContent = "Sending update securely to Firebase backend...";
+
+    const response = await fetch(UPDATE_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + idToken
+      },
+      body: JSON.stringify({
+        filename: selectedUpdateFile.name,
+        zipBase64
+      })
+    });
+
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(result.error || "Update failed.");
+    }
+
+    if (progress) {
+      const files = Array.isArray(result.updatedFiles) ? result.updatedFiles.join(", ") : "";
+      progress.textContent = `Update applied successfully. ${files ? "Updated: " + files : ""}`;
+    }
+
+    msg("GitHub update applied. GitHub Pages will deploy automatically.");
+    clearUpdateSelection();
+  } catch (error) {
+    console.error(error);
+    if (progress) {
+      progress.textContent = "Update failed: " + error.message;
+      progress.classList.add("show");
+    }
+    msg("Update failed: " + error.message, true);
+    if (apply) apply.disabled = false;
+  }
+}
+
+function setupImportUpdates() {
+  const input = document.getElementById("updateZipInput");
+  const dropzone = document.getElementById("updateDropzone");
+  const clear = document.getElementById("clearUpdateBtn");
+  const apply = document.getElementById("applyUpdateBtn");
+
+  if (!input || !dropzone || !clear || !apply) {
+    setTimeout(setupImportUpdates, 150);
+    return;
+  }
+
+  input.addEventListener("change", () => inspectZipFile(input.files?.[0]));
+
+  ["dragenter","dragover"].forEach(type => dropzone.addEventListener(type, event => {
+    event.preventDefault();
+    dropzone.classList.add("dragover");
+  }));
+  ["dragleave","drop"].forEach(type => dropzone.addEventListener(type, event => {
+    event.preventDefault();
+    dropzone.classList.remove("dragover");
+  }));
+  dropzone.addEventListener("drop", event => {
+    inspectZipFile(event.dataTransfer?.files?.[0]);
+  });
+
+  clear.addEventListener("click", clearUpdateSelection);
+  apply.addEventListener("click", applyImportedUpdate);
+}
+
+setupImportUpdates();
