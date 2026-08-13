@@ -322,76 +322,26 @@ body:before{
 
 <style>#recoverProfile{display:inline-flex!important}</style>
 
-<style id="adminAppearanceSettingsCSS">
-  .admin-appearance-card{display:grid;gap:12px}
-  .admin-appearance-row{display:grid;gap:6px}
-  .admin-appearance-row label{
+
+<style id="publicProfileDesignControlsCSS">
+  .public-ui-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .public-ui-field{display:grid;gap:6px}
+  .public-ui-field label{
     font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8a8175
   }
-  .admin-appearance-row select{
+  .public-ui-field select{
     width:100%;min-height:40px;border:1px solid var(--pa-line);border-radius:10px;
     background:#fff;padding:0 10px;color:var(--pa-text);font:600 11px Inter,sans-serif
   }
-  .admin-lang-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-  .admin-lang-switch button{
-    min-height:38px;border:1px solid var(--pa-line);border-radius:10px;
-    background:#fff;color:var(--pa-text);font:700 11px Inter,sans-serif;cursor:pointer
+  .public-ui-note{
+    margin-top:10px;padding:10px 11px;border:1px solid var(--pa-line);border-radius:10px;
+    background:#faf8f2;color:var(--pa-muted);font-size:10px;line-height:1.55
   }
-  .admin-lang-switch button.active{
-    background:var(--pa-green);border-color:var(--pa-green);color:#fff
+  .public-ui-reset{
+    width:100%;margin-top:10px;min-height:36px;border-radius:10px;border:1px solid var(--pa-line);
+    background:#fff;color:var(--pa-green);font:700 10px Inter,sans-serif;cursor:pointer
   }
-
-  /* Admin appearance presets */
-  body[data-admin-theme="cream"]{
-    --pa-bg:#f5f2ea;--pa-surface:#fff;--pa-text:#1e221e;--pa-muted:#777066;
-    --pa-line:#e7e0d1;--pa-green:#103d2f;--pa-green-2:#175443
-  }
-  body[data-admin-theme="white"]{
-    --pa-bg:#f6f7f6;--pa-surface:#fff;--pa-text:#171b18;--pa-muted:#69706b;
-    --pa-line:#dde2de;--pa-green:#183e31;--pa-green-2:#245d49
-  }
-  body[data-admin-theme="dark"]{
-    --pa-bg:#101512;--pa-surface:#171d19;--pa-text:#edf2ee;--pa-muted:#a2aaa4;
-    --pa-line:#2b352f;--pa-green:#2a7157;--pa-green-2:#39886b;
-    background:linear-gradient(180deg,#111713,#0e1210)!important
-  }
-  body[data-admin-theme="dark"] .premium-admin-topbar,
-  body[data-admin-theme="dark"] .premium-card,
-  body[data-admin-theme="dark"] .premium-login-card,
-  body[data-admin-theme="dark"] .admin-font-inner{
-    background:#171d19!important;border-color:#2b352f!important
-  }
-  body[data-admin-theme="dark"] .premium-card-head,
-  body[data-admin-theme="dark"] .premium-toolbar,
-  body[data-admin-theme="dark"] .premium-preview-shell{
-    background:#141a16!important;border-color:#2b352f!important
-  }
-  body[data-admin-theme="dark"] button,
-  body[data-admin-theme="dark"] select,
-  body[data-admin-theme="dark"] input{
-    background:#202722!important;color:#edf2ee!important;border-color:#354139!important
-  }
-  body[data-admin-theme="dark"] .premium-brand-copy h1,
-  body[data-admin-theme="dark"] .premium-card-head h2,
-  body[data-admin-theme="dark"] .premium-card-head h3{
-    color:#d7e8df!important
-  }
-
-  body[data-admin-density="compact"] .premium-card-body{padding:12px!important}
-  body[data-admin-density="compact"] .premium-card-head{padding:12px 14px!important}
-  body[data-admin-density="compact"] .premium-toolbar{padding:8px 10px!important}
-  body[data-admin-density="compact"] #preview{min-height:650px!important}
-
-  body[data-admin-density="comfortable"] .premium-card-body{padding:20px!important}
-  body[data-admin-density="comfortable"] .premium-card-head{padding:18px 20px!important}
-
-  body[data-admin-width="wide"] .premium-admin-shell{max-width:1500px!important}
-  body[data-admin-width="focused"] .premium-admin-shell{max-width:1180px!important}
-
-  html[lang="bn"] .premium-admin-shell,
-  body[data-admin-language="bn"] .premium-admin-shell{
-    font-family:'Noto Sans Bengali',Inter,sans-serif!important
-  }
+  @media(max-width:650px){.public-ui-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -495,7 +445,7 @@ window.PROFILE_ADMIN_EMAIL = "ssadnankabir@gmail.com";
 window.PROFILE_ADMIN_UID = "VM9V5M67iHO66p4SOFw43RgB3ml2";
 
 </script>
-<script type="module" src="js/admin.js?v=20260813-bnui1"></script>
+<script type="module" src="js/admin.js?v=20260813-publicui2"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -687,49 +637,68 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
       right.appendChild(card);
     }
 
-
-    const appearance = el("section","premium-card");
-    appearance.appendChild(el("div","premium-card-head",`
+    const publicUiCard = el("section","premium-card");
+    publicUiCard.appendChild(el("div","premium-card-head",`
       <div>
-        <h3 data-admin-i18n="appearanceTitle">Admin Appearance</h3>
-        <p data-admin-i18n="appearanceSub">Change only your Admin UI. Public profile is unaffected.</p>
+        <h3>Public Profile UI / UX</h3>
+        <p>এখান থেকে মূল public profile-এর look ও layout পরিবর্তন করুন।</p>
       </div>`));
-    const appearanceBody = el("div","premium-card-body");
-    appearanceBody.innerHTML = `
-      <div class="admin-appearance-card">
-        <div class="admin-appearance-row">
-          <label data-admin-i18n="adminLanguage">Admin Language</label>
-          <div class="admin-lang-switch">
-            <button type="button" id="adminLangBn">বাং</button>
-            <button type="button" id="adminLangEn">EN</button>
-          </div>
-        </div>
-        <div class="admin-appearance-row">
-          <label data-admin-i18n="theme">Theme</label>
-          <select id="adminThemeSelect">
-            <option value="cream">Premium Cream</option>
-            <option value="white">Clean White</option>
-            <option value="dark">Dark Green</option>
+    const publicUiBody = el("div","premium-card-body");
+    publicUiBody.innerHTML = `
+      <div class="public-ui-grid">
+        <div class="public-ui-field">
+          <label for="publicThemeSelect">Theme</label>
+          <select id="publicThemeSelect">
+            <option value="classic">Classic Cream</option>
+            <option value="clean">Clean White</option>
+            <option value="deep">Deep Green</option>
           </select>
         </div>
-        <div class="admin-appearance-row">
-          <label data-admin-i18n="density">Spacing</label>
-          <select id="adminDensitySelect">
+        <div class="public-ui-field">
+          <label for="publicWidthSelect">Content Width</label>
+          <select id="publicWidthSelect">
             <option value="normal">Normal</option>
-            <option value="compact">Compact</option>
-            <option value="comfortable">Comfortable</option>
-          </select>
-        </div>
-        <div class="admin-appearance-row">
-          <label data-admin-i18n="workspace">Workspace Width</label>
-          <select id="adminWidthSelect">
-            <option value="focused">Focused</option>
             <option value="wide">Wide</option>
           </select>
         </div>
-      </div>`;
-    appearance.appendChild(appearanceBody);
-    right.appendChild(appearance);
+        <div class="public-ui-field">
+          <label for="publicSpacingSelect">Section Spacing</label>
+          <select id="publicSpacingSelect">
+            <option value="normal">Normal</option>
+            <option value="compact">Compact</option>
+            <option value="relaxed">Relaxed</option>
+          </select>
+        </div>
+        <div class="public-ui-field">
+          <label for="publicCardSelect">Card Style</label>
+          <select id="publicCardSelect">
+            <option value="soft">Soft Premium</option>
+            <option value="flat">Flat</option>
+            <option value="rounded">More Rounded</option>
+          </select>
+        </div>
+        <div class="public-ui-field">
+          <label for="publicNavSelect">Navbar Style</label>
+          <select id="publicNavSelect">
+            <option value="floating">Floating</option>
+            <option value="simple">Simple</option>
+          </select>
+        </div>
+        <div class="public-ui-field">
+          <label for="publicTextSelect">Text Size</label>
+          <select id="publicTextSelect">
+            <option value="normal">Normal</option>
+            <option value="small">Compact</option>
+            <option value="large">Larger</option>
+          </select>
+        </div>
+      </div>
+      <div class="public-ui-note">
+        পরিবর্তন করলে Preview-তে সাথে সাথে দেখাবে। Save / Publish করলে public website-এ সবাই একই UI দেখবে।
+      </div>
+      <button type="button" class="public-ui-reset" id="publicUiReset">Reset Public UI</button>`;
+    publicUiCard.appendChild(publicUiBody);
+    right.appendChild(publicUiCard);
 
     const tools = el("section","premium-card");
     tools.appendChild(el("div","premium-card-head",`
@@ -805,144 +774,6 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
-
-<script id="adminAppearanceSettingsJS">
-(() => {
-  const TEXT = {
-    en: {
-      profileAdmin:"Profile Admin",
-      profileAdminSub:"Manage, preview, and publish Sadnan Kaabeer’s personal profile.",
-      firebase:"Firebase Connected",
-      viewProfile:"View Profile",
-      contentEditor:"Content Editor",
-      editorSub:"Double-click editable text inside the preview. Click a section or card to select it.",
-      fontTitle:"Bangla Font",
-      fontSub:"Publish this font choice so everyone sees the same style.",
-      editorTools:"Editor Tools",
-      editorToolsSub:"Quick actions for selected content.",
-      howEdit:"How to edit",
-      publishing:"Publishing",
-      appearanceTitle:"Admin Appearance",
-      appearanceSub:"Change only your Admin UI. Public profile is unaffected.",
-      adminLanguage:"Admin Language",
-      theme:"Theme",
-      density:"Spacing",
-      workspace:"Workspace Width",
-      loginTitle:"Welcome back",
-      loginSub:"Sign in with your Firebase administrator account to edit and publish the public profile."
-    },
-    bn: {
-      profileAdmin:"প্রোফাইল অ্যাডমিন",
-      profileAdminSub:"সাদনান কাবীরের ব্যক্তিগত প্রোফাইল সম্পাদনা, প্রিভিউ ও প্রকাশ করুন।",
-      firebase:"Firebase সংযুক্ত",
-      viewProfile:"প্রোফাইল দেখুন",
-      contentEditor:"কনটেন্ট এডিটর",
-      editorSub:"প্রিভিউয়ের লেখায় ডাবল ক্লিক করে এডিট করুন। সেকশন বা কার্ডে ক্লিক করে নির্বাচন করুন।",
-      fontTitle:"বাংলা ফন্ট",
-      fontSub:"Publish করলে এই ফন্টটি সবাই দেখবে।",
-      editorTools:"এডিটর টুলস",
-      editorToolsSub:"নির্বাচিত কনটেন্টের দ্রুত নিয়ন্ত্রণ।",
-      howEdit:"কীভাবে এডিট করবেন",
-      publishing:"পাবলিশিং",
-      appearanceTitle:"অ্যাডমিন অ্যাপিয়ারেন্স",
-      appearanceSub:"শুধু আপনার Admin UI পরিবর্তন হবে। Public profile পরিবর্তন হবে না।",
-      adminLanguage:"অ্যাডমিন ভাষা",
-      theme:"থিম",
-      density:"স্পেসিং",
-      workspace:"ওয়ার্কস্পেস প্রস্থ",
-      loginTitle:"আবার স্বাগতম",
-      loginSub:"Public profile সম্পাদনা ও Publish করতে Firebase administrator account দিয়ে sign in করুন।"
-    }
-  };
-
-  const stored = {
-    lang: localStorage.getItem("admin.ui.language") || "bn",
-    theme: localStorage.getItem("admin.ui.theme") || "cream",
-    density: localStorage.getItem("admin.ui.density") || "normal",
-    width: localStorage.getItem("admin.ui.width") || "wide"
-  };
-
-  function q(sel){ return document.querySelector(sel); }
-
-  function translate(lang){
-    const t = TEXT[lang] || TEXT.en;
-    document.body.dataset.adminLanguage = lang;
-
-    q(".premium-brand-copy h1") && (q(".premium-brand-copy h1").textContent=t.profileAdmin);
-    q(".premium-brand-copy p") && (q(".premium-brand-copy p").textContent=t.profileAdminSub);
-    q(".premium-status") && (q(".premium-status").textContent=t.firebase);
-    q(".premium-view-link") && (q(".premium-view-link").textContent=t.viewProfile);
-
-    const heads = [...document.querySelectorAll(".premium-card-head")];
-    heads.forEach(head => {
-      const h = head.querySelector("h2,h3");
-      const p = head.querySelector("p");
-      if (!h) return;
-      if (/Content Editor|কনটেন্ট এডিটর/i.test(h.textContent)) {
-        h.textContent=t.contentEditor; if(p) p.textContent=t.editorSub;
-      } else if (/বাংলা ফন্ট|Bangla Font/i.test(h.textContent)) {
-        h.textContent=t.fontTitle; if(p) p.textContent=t.fontSub;
-      } else if (/Editor Tools|এডিটর টুলস/i.test(h.textContent)) {
-        h.textContent=t.editorTools; if(p) p.textContent=t.editorToolsSub;
-      } else if (/Publishing|পাবলিশিং/i.test(h.textContent)) {
-        h.textContent=t.publishing;
-      }
-    });
-
-    document.querySelectorAll("[data-admin-i18n]").forEach(node => {
-      const key=node.dataset.adminI18n;
-      if(t[key]) node.textContent=t[key];
-    });
-
-    q(".premium-login-hero h2") && (q(".premium-login-hero h2").textContent=t.loginTitle);
-    q(".premium-login-hero p") && (q(".premium-login-hero p").textContent=t.loginSub);
-
-    q("#adminLangBn")?.classList.toggle("active",lang==="bn");
-    q("#adminLangEn")?.classList.toggle("active",lang==="en");
-    localStorage.setItem("admin.ui.language",lang);
-  }
-
-  function apply(){
-    document.body.dataset.adminTheme=stored.theme;
-    document.body.dataset.adminDensity=stored.density;
-    document.body.dataset.adminWidth=stored.width;
-
-    const theme=q("#adminThemeSelect");
-    const density=q("#adminDensitySelect");
-    const width=q("#adminWidthSelect");
-    if(theme) theme.value=stored.theme;
-    if(density) density.value=stored.density;
-    if(width) width.value=stored.width;
-
-    translate(stored.lang);
-  }
-
-  const wait=setInterval(()=>{
-    if(!q("#adminThemeSelect")) return;
-    clearInterval(wait);
-
-    q("#adminThemeSelect").addEventListener("change",e=>{
-      stored.theme=e.target.value;
-      localStorage.setItem("admin.ui.theme",stored.theme);
-      apply();
-    });
-    q("#adminDensitySelect").addEventListener("change",e=>{
-      stored.density=e.target.value;
-      localStorage.setItem("admin.ui.density",stored.density);
-      apply();
-    });
-    q("#adminWidthSelect").addEventListener("change",e=>{
-      stored.width=e.target.value;
-      localStorage.setItem("admin.ui.width",stored.width);
-      apply();
-    });
-    q("#adminLangBn").addEventListener("click",()=>{stored.lang="bn";translate("bn")});
-    q("#adminLangEn").addEventListener("click",()=>{stored.lang="en";translate("en")});
-
-    apply();
-  },100);
-})();
-</script>
 
 </body>
 </html>
