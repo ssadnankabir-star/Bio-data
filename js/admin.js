@@ -123,16 +123,9 @@ function snapshot() {
 
 function buildAdminPreviewHtml(html) {
   const parser = new DOMParser();
-  const doc = parser.parseFromString(String(html || ""), "text/html");
+  const doc = parser.parseFromString(stripUnsafeMarkup(String(html || "")), "text/html");
 
-  // Keep only the language script so বাং / EN still works in Admin preview.
-  doc.querySelectorAll("script").forEach(node => {
-    const src = node.getAttribute("src") || "";
-    const keepI18n = /(?:^|\/)i18n\.js(?:\?|$)/i.test(src);
-    if (!keepI18n) node.remove();
-  });
-
-  // Public-only app UI must never appear in the editor.
+  // Remove all public-only app chrome from Admin preview.
   doc.querySelectorAll(
     "#appSplash,#installAppSection,#installAppBtn,#pwaInstallHint,#portfolioTools,.live-share-modal"
   ).forEach(node => node.remove());
@@ -150,12 +143,17 @@ function buildAdminPreviewHtml(html) {
     }
   });
 
-  // Resolve assets/scripts correctly from the live site.
+  // Make relative assets resolve against the real site.
   if (!doc.querySelector("base")) {
     const base = doc.createElement("base");
     base.href = new URL("./", window.location.href).href;
     doc.head.prepend(base);
   }
+
+  // Re-add only the trusted language script so বাং / EN works in preview.
+  const i18nScript = doc.createElement("script");
+  i18nScript.src = "js/i18n.js?v=preview-bn1";
+  doc.body.appendChild(i18nScript);
 
   const guard = doc.createElement("style");
   guard.setAttribute("data-admin-preview-guard", "true");
@@ -193,6 +191,164 @@ function isUsableProfileHtml(html) {
     && /id=["']personal["']/.test(html)
     && /<body[\s>]/i.test(html);
 }
+
+
+const PUBLIC_UI_DEFAULTS = {
+  theme: "classic",
+  width: "normal",
+  spacing: "normal",
+  card: "soft",
+  nav: "floating",
+  text: "normal"
+};
+
+function getPublicUiConfigFromHtml(sourceHtml) {
+  try {
+    const doc = new DOMParser().parseFromString(sourceHtml || "", "text/html");
+    const cfg = doc.getElementById("publishedPublicUiConfig");
+    return {
+      theme: cfg?.dataset?.theme || PUBLIC_UI_DEFAULTS.theme,
+      width: cfg?.dataset?.width || PUBLIC_UI_DEFAULTS.width,
+      spacing: cfg?.dataset?.spacing || PUBLIC_UI_DEFAULTS.spacing,
+      card: cfg?.dataset?.card || PUBLIC_UI_DEFAULTS.card,
+      nav: cfg?.dataset?.nav || PUBLIC_UI_DEFAULTS.nav,
+      text: cfg?.dataset?.text || PUBLIC_UI_DEFAULTS.text
+    };
+  } catch {
+    return { ...PUBLIC_UI_DEFAULTS };
+  }
+}
+
+function publicUiCss(config) {
+  const themeCss = {
+    classic: `
+      body{background:#FBF7EE!important}
+      .card,.section{background:#fff!important}
+    `,
+    clean: `
+      body{background:#F7F8F6!important}
+      .card,.section{background:#fff!important}
+      .frame-outer,.frame-inner{border-color:#E4E8E3!important}
+    `,
+    deep: `
+      body{background:#F2F5F2!important}
+      .header{background:linear-gradient(180deg,#EFF5F1,#FBF7EE)!important}
+      .section-title h3,.name,.professional-company-name{color:#0B3326!important}
+    `
+  }[config.theme] || "";
+
+  const widthCss = config.width === "wide"
+    ? `.wrap{max-width:1180px!important}`
+    : `.wrap{max-width:920px!important}`;
+
+  const spacingCss = {
+    compact: `.section,.block{margin-top:10px!important}.card{padding:14px!important}`,
+    relaxed: `.section,.block{margin-top:24px!important}.card{padding:22px!important}`,
+    normal: ``
+  }[config.spacing] || "";
+
+  const cardCss = {
+    flat: `.card,.section{box-shadow:none!important;border-radius:10px!important}`,
+    rounded: `.card,.section{border-radius:20px!important}`,
+    soft: `.card,.section{border-radius:14px!important;box-shadow:0 8px 24px rgba(15,61,46,.055)!important}`
+  }[config.card] || "";
+
+  const navCss = config.nav === "simple"
+    ? `.profile-nav{box-shadow:none!important;border-radius:10px!important;background:#fff!important}`
+    : ``;
+
+  const textCss = {
+    small: `body{font-size:94%!important}`,
+    large: `body{font-size:106%!important}`,
+    normal: ``
+  }[config.text] || "";
+
+  return [themeCss,widthCss,spacingCss,cardCss,navCss,textCss].join("\n");
+}
+
+function applyPublicUiConfigToHtml(sourceHtml, config) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(sourceHtml || "", "text/html");
+
+  let cfg = doc.getElementById("publishedPublicUiConfig");
+  if (!cfg) {
+    cfg = doc.createElement("div");
+    cfg.id = "publishedPublicUiConfig";
+    cfg.hidden = true;
+    doc.body.prepend(cfg);
+  }
+
+  Object.entries(config).forEach(([key,value]) => cfg.dataset[key] = value);
+
+  let style = doc.getElementById("publishedPublicUiOverrides");
+  if (!style) {
+    style = doc.createElement("style");
+    style.id = "publishedPublicUiOverrides";
+    doc.head.appendChild(style);
+  }
+  style.textContent = publicUiCss(config);
+
+  return "<!doctype html>\n" + doc.documentElement.outerHTML;
+}
+
+function readPublicUiControls() {
+  return {
+    theme: document.getElementById("publicThemeSelect")?.value || PUBLIC_UI_DEFAULTS.theme,
+    width: document.getElementById("publicWidthSelect")?.value || PUBLIC_UI_DEFAULTS.width,
+    spacing: document.getElementById("publicSpacingSelect")?.value || PUBLIC_UI_DEFAULTS.spacing,
+    card: document.getElementById("publicCardSelect")?.value || PUBLIC_UI_DEFAULTS.card,
+    nav: document.getElementById("publicNavSelect")?.value || PUBLIC_UI_DEFAULTS.nav,
+    text: document.getElementById("publicTextSelect")?.value || PUBLIC_UI_DEFAULTS.text
+  };
+}
+
+function loadPublicUiControls(config) {
+  const map = {
+    publicThemeSelect: config.theme,
+    publicWidthSelect: config.width,
+    publicSpacingSelect: config.spacing,
+    publicCardSelect: config.card,
+    publicNavSelect: config.nav,
+    publicTextSelect: config.text
+  };
+  Object.entries(map).forEach(([id,value]) => {
+    const node = document.getElementById(id);
+    if (node) node.value = value;
+  });
+}
+
+function previewPublicUiChange() {
+  if (!isUsableProfileHtml(state.html)) return;
+  const config = readPublicUiControls();
+  state.html = applyPublicUiConfigToHtml(state.html, config);
+  localStorage.setItem(localKey, state.html);
+  render(state.html, false);
+  $("status").textContent = "Unsynced public UI changes";
+}
+
+function setupPublicUiControls() {
+  const ids = [
+    "publicThemeSelect","publicWidthSelect","publicSpacingSelect",
+    "publicCardSelect","publicNavSelect","publicTextSelect"
+  ];
+
+  if (!document.getElementById("publicThemeSelect")) {
+    setTimeout(setupPublicUiControls, 150);
+    return;
+  }
+
+  loadPublicUiControls(getPublicUiConfigFromHtml(state.html));
+
+  ids.forEach(id => {
+    document.getElementById(id)?.addEventListener("change", previewPublicUiChange);
+  });
+
+  document.getElementById("publicUiReset")?.addEventListener("click", () => {
+    loadPublicUiControls({ ...PUBLIC_UI_DEFAULTS });
+    previewPublicUiChange();
+  });
+}
+
 
 async function loadContent() {
   let baseHtml = "";
@@ -242,6 +398,7 @@ async function loadContent() {
   loadPublishedFontsFromHtml(html);
   render(html, false);
   state.ready = true;
+  setupPublicUiControls();
 
   // Force a second paint on desktop if srcdoc is delayed.
   setTimeout(() => {
@@ -400,6 +557,7 @@ async function saveToCloud() {
   }
 
   state.html = applyPublishedFontsToHtml(cleaned);
+  state.html = applyPublicUiConfigToHtml(state.html, readPublicUiControls());
 
   if (!isUsableProfileHtml(state.html)) {
     return msg("Publish stopped because the profile document was incomplete.", true);
