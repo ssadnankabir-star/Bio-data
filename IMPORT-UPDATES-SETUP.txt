@@ -1,0 +1,50 @@
+IMPORT UPDATES - FIRST TIME SETUP
+
+This package adds:
+- Admin > Import Updates
+- ZIP drag/drop
+- Firebase-authenticated backend
+- GitHub repository updates through GitHub API
+
+Repository configured:
+  ssadnankabir-star/Bio-data
+Branch:
+  main
+Firebase project:
+  sadnan-personal-profile
+Authorized Firebase UID:
+  VM9V5M67iHO66p4SOFw43RgB3ml2
+
+FIRST-TIME DEPLOY
+
+1. Install Node.js 20+ and Firebase CLI on a PC:
+   npm install -g firebase-tools
+
+2. In this project folder:
+   firebase login
+   firebase use sadnan-personal-profile
+
+3. Install Functions dependencies:
+   cd functions
+   npm install
+   cd ..
+
+4. Create a GitHub fine-grained personal access token.
+   Give it access ONLY to the Bio-data repository.
+   Required repository permission:
+   Contents: Read and write
+
+5. Store the token as a Firebase secret:
+   firebase functions:secrets:set GITHUB_TOKEN
+
+6. Deploy the backend:
+   firebase deploy --only functions
+
+After deployment, Admin > Import Updates can upload changed-files ZIP packages.
+GitHub Pages will deploy after GitHub receives the updated files.
+
+SECURITY
+- GitHub token is never stored in admin.html or public JavaScript.
+- Firebase ID token is verified by the Cloud Function.
+- Only the configured Firebase UID can apply updates.
+- ZIP paths are restricted to approved website files/folders.

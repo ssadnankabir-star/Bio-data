@@ -344,6 +344,50 @@ body:before{
   @media(max-width:650px){.public-ui-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style id="importUpdatesCSS">
+  .update-dropzone{
+    border:1.5px dashed #D8CBAE;
+    border-radius:14px;
+    padding:18px 14px;
+    text-align:center;
+    background:#FCFAF5;
+    transition:.18s ease;
+    cursor:pointer;
+  }
+  .update-dropzone.dragover{
+    border-color:#0F3D2E;
+    background:#F2F7F3;
+    transform:translateY(-1px);
+  }
+  .update-dropzone strong{display:block;color:#0F3D2E;font-size:12px;margin-bottom:4px}
+  .update-dropzone span{display:block;color:#756D61;font-size:10px;line-height:1.5}
+  .update-file-input{display:none}
+  .update-file-list{display:grid;gap:6px;margin-top:10px}
+  .update-file-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:8px 10px;border:1px solid #ECE4D5;border-radius:9px;background:#fff;
+    font:600 10px Inter,sans-serif;color:#3A352F
+  }
+  .update-file-row small{color:#8B8378;font-weight:500}
+  .update-actions{display:flex;gap:8px;margin-top:10px}
+  .update-actions button{
+    flex:1;min-height:38px;border-radius:10px;border:1px solid #E5DDCE;
+    font:700 10px Inter,sans-serif;cursor:pointer
+  }
+  #applyUpdateBtn{background:#0F3D2E;color:#fff;border-color:#0F3D2E}
+  #clearUpdateBtn{background:#fff;color:#5F584F}
+  .update-progress{
+    display:none;margin-top:10px;padding:10px;border-radius:10px;
+    background:#F4F7F4;border:1px solid #DCE8E0;color:#285B47;font:600 10px/1.5 Inter,sans-serif
+  }
+  .update-progress.show{display:block}
+  .update-warning{
+    margin-top:10px;padding:9px 10px;border-radius:10px;background:#FFF9EB;
+    border:1px solid #EEDFAA;color:#7A6114;font:500 9.5px/1.5 Inter,sans-serif
+  }
+</style>
+
 </head>
 <body>
 <div><h2>Profile Admin</h2><p>Manage, preview, and publish your profile content.</p></div></div>
@@ -445,7 +489,7 @@ window.PROFILE_ADMIN_EMAIL = "ssadnankabir@gmail.com";
 window.PROFILE_ADMIN_UID = "VM9V5M67iHO66p4SOFw43RgB3ml2";
 
 </script>
-<script type="module" src="js/admin.js?v=20260813-publicui2"></script>
+<script type="module" src="js/admin.js?v=20260813-import-updates1"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -699,6 +743,32 @@ window.addEventListener('appinstalled',()=>{if(installBtn)installBtn.style.displ
       <button type="button" class="public-ui-reset" id="publicUiReset">Reset Public UI</button>`;
     publicUiCard.appendChild(publicUiBody);
     right.appendChild(publicUiCard);
+
+
+    const importCard = el("section","premium-card");
+    importCard.appendChild(el("div","premium-card-head",`
+      <div>
+        <h3>Import Updates</h3>
+        <p>আমার দেওয়া changed-files ZIP এখানে upload করে GitHub update করুন।</p>
+      </div>`));
+    const importBody = el("div","premium-card-body");
+    importBody.innerHTML = `
+      <label class="update-dropzone" id="updateDropzone" for="updateZipInput">
+        <strong>Drop update ZIP here</strong>
+        <span>বা tap করে ZIP browse করুন</span>
+      </label>
+      <input class="update-file-input" id="updateZipInput" type="file" accept=".zip,application/zip">
+      <div class="update-file-list" id="updateFileList"></div>
+      <div class="update-actions">
+        <button type="button" id="clearUpdateBtn">Clear</button>
+        <button type="button" id="applyUpdateBtn" disabled>Apply Update</button>
+      </div>
+      <div class="update-progress" id="updateProgress"></div>
+      <div class="update-warning">
+        শুধু approved project files update হবে। Apply করার আগে Firebase admin login verify করা হবে।
+      </div>`;
+    importCard.appendChild(importBody);
+    right.appendChild(importCard);
 
     const tools = el("section","premium-card");
     tools.appendChild(el("div","premium-card-head",`
